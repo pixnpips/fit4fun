@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 
-class Views:
+class Startview:
     def __init__(self,root):
 
         self.root = root
@@ -31,7 +31,7 @@ class Views:
 
 
 
-    def test(self):
+    def show(self):
 
         # Buttons zum Aufzeichnen von Daten
         self.create_user_button.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
@@ -48,7 +48,6 @@ class Views:
         self.weight_label.grid(row=3, column=0, padx=10, pady=10)
         self.weight_entry.grid(row=3, column=1, padx=10, pady=10)
 
-
         #Buttons zum Recorden platzieren
         self.record_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
         self.record_meal_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
@@ -60,3 +59,19 @@ class Views:
         self.show_weight_button.grid(row=9, column=0, columnspan=2, padx=10, pady=10)
 
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
+
+
+class Userview:
+    def __init__(self, root):
+        self.root = root
+
+        self.meal_entry = ttk.Entry(self.root)
+
+        # Button um User zu erstellen
+        self.create_user_button = ttk.Button(self.root, text="User erstellen")
+
+        # Labels der Erstansicht
+        self.training_label = ttk.Label(self.root, text="Trainingsaktivität:")
+
+        # Buttons zum Aufzeichnen von Daten
+        self.create_user_button.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
