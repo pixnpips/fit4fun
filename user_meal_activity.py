@@ -14,6 +14,7 @@ class Activity:
 
 
 class Meal:
+
     first = {'Tofu': 76, 'Seitan': 148, 'Chicken': 168, 'Beef': 250, 'Fish': 206}
     second = {'Potato': 76, 'Rice': 130, 'Noodles': 138, 'Bread': 240, 'Salat': 27}
     drink = {'Water': 0, 'Limonade': 42, 'Juice': 54}

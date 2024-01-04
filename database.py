@@ -1,10 +1,9 @@
 import sqlite3
 
 class Database:
-    def __init__(self, db_path="tracker.db"):
+    def __init__(self):
         self.conn = sqlite3.connect('fitness_tracker.db')
         self.cursor = self.conn.cursor()
-        self.create_tables()
 
     def create_tables(self):
         # Erstellen von Tabellen, falls noch nicht existieren
@@ -32,6 +31,16 @@ class Database:
                     date TEXT
                 )
             ''')
+
+            self.cursor.execute('''
+                            CREATE TABLE IF NOT EXISTS user (
+                                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                name TEXT,
+                                age INT,
+                                weight INT,
+                                fl text
+                            )
+                        ''')
         
         # (Weitere Tabellen hier)
 
