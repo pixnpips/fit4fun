@@ -77,6 +77,11 @@ class FitnessTrackerApp(tk.Tk):
         # Eingabefelder leeren
         self.Startview.workout_entry.delete(0, tki.END)
 
+        self.db.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
+        workouts = self.db.cursor.fetchall()
+
+        print(workouts)
+
     def record_meal(self):
         # Eingabewerte vom Benutzer abrufen
         meal_name = self.Startview.meal_entry.get()
@@ -119,6 +124,10 @@ class FitnessTrackerApp(tk.Tk):
         self.Startview.meal_entry.delete(0, tki.END)
         # self.calories_entry.delete(0, tki.END)
 
+        self.db.cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+        meals = self.db.cursor.fetchall()
+        print(meals)
+
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
         weight = self.Startview.weight_entry.get()
@@ -147,28 +156,41 @@ class FitnessTrackerApp(tk.Tk):
         # Eingabefelder leeren
         self.Startview.weight_entry.delete(0, tki.END)
 
-    def show_workouts(self):
-        #Ein Frame erstellen, um Trainingsaktivitäten anzuzeigen
+        self.db.cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+        weight_logs = self.db.cursor.fetchall()
 
-        workouts_frame = tki.Frame(self)
-        workouts_frame.grid(row=15, column=0, columnspan=2, pady=10)
+        print(weight_logs)
+
+    def show_workouts(self):
+        # Ein Frame erstellen, um Trainingsaktivitäten anzuzeigen
+
+        neues_fenster = tk.Toplevel(self.container)
+        workouts_frame = tk.Frame(neues_fenster)
+
+        workouts_frame.pack()
 
         # Ein Label für die Spaltenüberschriften
-        tki.Label(workouts_frame, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
-        tki.Label(workouts_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(workouts_frame, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(workouts_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
 
         # Trainingsaktivitäten aus der Datenbank abrufen
         self.db.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
         workouts = self.db.cursor.fetchall()
 
+        print(workouts)
+
         # Trainingsaktivitäten im Frame anzeigen
         for index, workout in enumerate(workouts, start=1):
-            tki.Label(workouts_frame, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
-            tki.Label(workouts_frame, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(workouts_frame, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
+            tk.Label(workouts_frame, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
+
+
 
     def show_meals(self):
         # Ein Frame erstellen, um Mahlzeiten anzuzeigen
-        meals_frame = tki.Frame()
+        neues_fenster = tk.Toplevel(self.container)
+
+        meals_frame = tki.Frame(neues_fenster)
         meals_frame.grid(row=15, column=0, columnspan=2, pady=10)
 
         # Ein Label für die Spaltenüberschriften
@@ -188,7 +210,9 @@ class FitnessTrackerApp(tk.Tk):
 
     def show_weight_logs(self):
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        weight_logs_frame = tki.Frame(self.root)
+        neues_fenster = tk.Toplevel(self.container)
+
+        weight_logs_frame = tki.Frame(neues_fenster)
         weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
 
         # Ein Label für die Spaltenüberschriften
@@ -205,8 +229,8 @@ class FitnessTrackerApp(tk.Tk):
             tki.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
 
     def map_button_functions(self):
-        self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
-        # self.Startview.show_workout_button.configure(command=self.show_workouts())
+        # self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
+        self.Startview.show_workout_button.configure(command=self.show_workouts)
         self.Startview.show_meal_button.configure(command=self.show_meals)
         self.Startview.show_weight_button.configure(command=self.show_weight_logs)
 
