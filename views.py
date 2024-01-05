@@ -2,6 +2,7 @@ import tkinter as tk # python 3
 from database import Database
 
 
+
 class Startview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -32,6 +33,9 @@ class Startview(tk.Frame):
 
         self.message_Label = tk.Label(self, text="lalala")
 
+
+
+    def show(self):
         self.create_user_button.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
         # Label für Trainingsaktivitäten
@@ -59,7 +63,6 @@ class Startview(tk.Frame):
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
 
 
-
 class Userview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -76,6 +79,9 @@ class Userview(tk.Frame):
         self.weight_label = tk.Label(self, text="Gewicht (kg):")
         self.fl_label = tk.Label(self, text="Gewicht (kg):")
 
+
+
+    def show(self):
         self.name_label.grid(row=1, column=0, padx=10, pady=10)
         self.workout_entry.grid(row=1, column=1, padx=10, pady=10)
 
@@ -92,7 +98,7 @@ class Userview(tk.Frame):
         self.fl_entry.grid(row=4, column=1, padx=10, pady=10)
 
         button = tk.Button(self, text="Go to the start page",
-                           command=lambda: controller.show_frame("sv"))
+                           command=lambda: self.controller.show_frame("sv"))
         button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
 
         # Button um User zu erstellen
@@ -102,30 +108,36 @@ class Userview(tk.Frame):
         self.create_user_button.grid(row=11, column=1, columnspan=2, padx=10, pady=10)
 
 
+
 class Trainingview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.db = Database()
+        self.connection = self.db.get_connection()
+        self.cursor = self.connection.cursor()
 
+        self.activity_label=tk.Label(self, text="Aktivität")
+        self.date_label = tk.Label(self, text="Datum")
+
+    def show(self):
         # Ein Label für die Spaltenüberschriften
-        tk.Label(self, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
-        tk.Label(self, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+        self.activity_label.grid(row=0, column=0, padx=5, pady=5)
+        self.date_label.grid(row=0, column=1, padx=5, pady=5)
 
         button = tk.Button(self, text="Go to the start page",
-                           command=lambda: controller.show_frame("sv"))
+                           command=lambda: self.controller.show_frame("sv"))
         button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
 
-    def showtraining(self, parent, controller):
-
-        self.db.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
-        workouts = self.db.cursor.fetchall()
-
+        self.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
+        workouts = self.cursor.fetchall()
         print('Workout' + str(workouts))
 
         for index, workout in enumerate(workouts, start=1):
             tk.Label(self, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
             tk.Label(self, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
+
+
 
 class Mealview(tk.Frame):
     def __init__(self, parent, controller):

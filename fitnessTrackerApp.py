@@ -39,7 +39,6 @@ class FitnessTrackerApp(tk.Tk):
         # SQLite-Datenbankverbindung herstellen
         self.db = Database()
         self.db.create_tables()
-
         print(vars(self.frames.get('sv')))
 
         # funktionen mappen
@@ -49,11 +48,14 @@ class FitnessTrackerApp(tk.Tk):
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
+        frame.show()
         frame.tkraise()
 
     def record_workout(self):
         # Eingabewerte vom Benutzer abrufen
         activity = self.Startview.workout_entry.get()
+        connection = self.db.get_connection()
+        cursor = connection.cursor()
 
         print(activity)
 
@@ -68,7 +70,7 @@ class FitnessTrackerApp(tk.Tk):
 
         # Trainingsaktivität in die Datenbank einfügen
 
-        self.db.cursor.execute("INSERT INTO workouts (activity, date) VALUES (?, ?)", (activity, current_date))
+        cursor.execute("INSERT INTO workouts (activity, date) VALUES (?, ?)", (activity, current_date))
 
         # Meldung anzeigen, dass die Trainingsaktivität erfolgreich aufgezeichnet wurde
         self.Startview.message_Label.configure(text=f"Trainingsaktivität '{activity}' erfolgreich aufgezeichnet.",
@@ -77,8 +79,8 @@ class FitnessTrackerApp(tk.Tk):
         # Eingabefelder leeren
         self.Startview.workout_entry.delete(0, tki.END)
 
-        self.db.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
-        workouts = self.db.cursor.fetchall()
+        cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
+        workouts = cursor.fetchall()
 
         print(workouts)
 
@@ -86,6 +88,9 @@ class FitnessTrackerApp(tk.Tk):
         # Eingabewerte vom Benutzer abrufen
         meal_name = self.Startview.meal_entry.get()
         print(meal_name)
+
+        connection = self.db.get_connection()
+        cursor = connection.cursor()
 
         # Überprüfen, ob die Eingabe nicht leer ist
         if not meal_name:
@@ -112,7 +117,7 @@ class FitnessTrackerApp(tk.Tk):
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Mahlzeit in die Datenbank einfügen
-        self.db.cursor.execute("INSERT INTO meals (meal_name, calories, date) VALUES (?, ?, ?)",
+        cursor.execute("INSERT INTO meals (meal_name, calories, date) VALUES (?, ?, ?)",
                                (meal_name, calories, current_date))
 
         # Meldung anzeigen, dass die Mahlzeit erfolgreich aufgezeichnet wurde
@@ -124,13 +129,16 @@ class FitnessTrackerApp(tk.Tk):
         self.Startview.meal_entry.delete(0, tki.END)
         # self.calories_entry.delete(0, tki.END)
 
-        self.db.cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
-        meals = self.db.cursor.fetchall()
+        cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+        meals = cursor.fetchall()
         print(meals)
 
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
         weight = self.Startview.weight_entry.get()
+
+        connection = self.db.get_connection()
+        cursor = connection.cursor()
 
         print(weight)
         # Überprüfen, ob die Eingabe eine positive Zahl ist
@@ -148,7 +156,7 @@ class FitnessTrackerApp(tk.Tk):
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Gewichtsverlauf in die Datenbank einfügen
-        self.db.cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (weight, current_date))
+        cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (weight, current_date))
 
         # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
         self.Startview.message_Label.configure(text=f"Gewicht {weight} kg erfolgreich aufgezeichnet.", foreground="green")
@@ -156,8 +164,8 @@ class FitnessTrackerApp(tk.Tk):
         # Eingabefelder leeren
         self.Startview.weight_entry.delete(0, tki.END)
 
-        self.db.cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
-        weight_logs = self.db.cursor.fetchall()
+        cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+        weight_logs = cursor.fetchall()
 
         print(weight_logs)
 
@@ -169,13 +177,16 @@ class FitnessTrackerApp(tk.Tk):
 
         workouts_frame.pack()
 
+        connection = self.db.get_connection()
+        cursor = connection.cursor()
+
         # Ein Label für die Spaltenüberschriften
         tk.Label(workouts_frame, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
         tk.Label(workouts_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
 
         # Trainingsaktivitäten aus der Datenbank abrufen
-        self.db.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
-        workouts = self.db.cursor.fetchall()
+        cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
+        workouts = cursor.fetchall()
 
         print(workouts)
 
@@ -190,6 +201,9 @@ class FitnessTrackerApp(tk.Tk):
         # Ein Frame erstellen, um Mahlzeiten anzuzeigen
         neues_fenster = tk.Toplevel(self.container)
 
+        connection = self.db.get_connection()
+        cursor = connection.cursor()
+
         meals_frame = tki.Frame(neues_fenster)
         meals_frame.grid(row=15, column=0, columnspan=2, pady=10)
 
@@ -199,8 +213,8 @@ class FitnessTrackerApp(tk.Tk):
         tki.Label(meals_frame, text="Datum").grid(row=0, column=2, padx=5, pady=5)
 
         # Mahlzeiten aus der Datenbank abrufen
-        self.db.cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
-        meals = self.db.cursor.fetchall()
+        cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+        meals = cursor.fetchall()
 
         # Mahlzeiten im Frame anzeigen
         for index, meal in enumerate(meals, start=1):
@@ -212,6 +226,9 @@ class FitnessTrackerApp(tk.Tk):
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
         neues_fenster = tk.Toplevel(self.container)
 
+        connection = self.db.get_connection()
+        cursor = connection.cursor()
+
         weight_logs_frame = tki.Frame(neues_fenster)
         weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
 
@@ -220,8 +237,8 @@ class FitnessTrackerApp(tk.Tk):
         tki.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
 
         # Gewichtsverlauf aus der Datenbank abrufen
-        self.db.cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
-        weight_logs = self.db.cursor.fetchall()
+        cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+        weight_logs = cursor.fetchall()
 
         # Gewichtsverlauf im Frame anzeigen
         for index, log in enumerate(weight_logs, start=1):
@@ -229,8 +246,8 @@ class FitnessTrackerApp(tk.Tk):
             tki.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
 
     def map_button_functions(self):
-        # self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
-        self.Startview.show_workout_button.configure(command=self.show_workouts)
+        self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
+        # self.Startview.show_workout_button.configure(command=self.show_workouts)
         self.Startview.show_meal_button.configure(command=self.show_meals)
         self.Startview.show_weight_button.configure(command=self.show_weight_logs)
 

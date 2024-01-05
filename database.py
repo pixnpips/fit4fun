@@ -1,14 +1,26 @@
 import sqlite3
 
+
 class Database:
-    def __init__(self):
-        self.conn = sqlite3.connect('fitness_tracker.db')
-        self.cursor = self.conn.cursor()
+
+    # Erstellen eines Singletons für die Datenbankklasse
+
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Database, cls).__new__(cls)
+            cls._instance.connection = sqlite3.connect('fitness_tracker.db')
+        return cls._instance
+
+    #Db Connection für alle Methoden und Klassenmethoden die eine Connection brauchen, Cursor einfach im Scope erstellen!
+    def get_connection(self):
+        return self.connection
 
     def create_tables(self):
         # Erstellen von Tabellen, falls noch nicht existieren
-        with self.conn:
-            self.cursor.execute('''
+        cursor = self.get_connection().cursor()
+        cursor.execute('''
                 CREATE TABLE IF NOT EXISTS workouts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     activity TEXT,
@@ -16,7 +28,7 @@ class Database:
                     date TEXT
                 )
             ''')
-            self.cursor.execute('''
+        cursor.execute('''
                 CREATE TABLE IF NOT EXISTS meals (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     meal_name TEXT,
@@ -24,7 +36,7 @@ class Database:
                     date TEXT
                 )
             ''')
-            self.cursor.execute('''
+        cursor.execute('''
                 CREATE TABLE IF NOT EXISTS weight_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     weight REAL,
@@ -32,7 +44,7 @@ class Database:
                 )
             ''')
 
-            self.cursor.execute('''
+        cursor.execute('''
                             CREATE TABLE IF NOT EXISTS user (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 name TEXT,
@@ -41,8 +53,7 @@ class Database:
                                 fl text
                             )
                         ''')
-        
+
         # (Weitere Tabellen hier)
 
-        self.conn.commit()
-
+        self.connection.commit()
