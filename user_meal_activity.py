@@ -35,6 +35,12 @@ class Meal:
 
     def count_cals(self):
         pass
+    
+    # Beispiel für die Verwendung der Klasse Meal
+meal = Meal("Chicken", 1, "Rice", 1, "Water", 2)
+
+print(f"Meal: First: {meal.first}, Quantity: {meal.fq}, Second: {meal.second}, Quantity: {meal.sq}, Drink: {meal.drink}")
+
 
 class WeightEntry:
     def __init__(self, date, weight):
@@ -50,5 +56,5 @@ weight_entry = WeightEntry("2024-02-02", 55.5)
 #print(f"User: {user.name}, Age: {user.age}, Weight: {user.weight}, Fitness Level: {user.fl}")
 print(f"Weight Entry: Date: {weight_entry.date}, Weight: {weight_entry.weight}")
 print(f"Activity: Name: {activity.name}, Duration: {activity.duration}, Calories: {activity.calories}")
-#print(f"Meal: First: {meal.first}, Quantity: {meal.fq}, Second: {meal.second}, Quantity: {meal.sq}, Drink: {meal.drink}, Quantity: {meal.dq}")
+print(f"Meal: First: {meal.first}, Quantity: {meal.fq}, Second: {meal.second}, Quantity: {meal.sq}, Drink: {meal.drink}, Quantity: {meal.dq}")
 #In diesem Beispiel wurde die WeightEntry-Klasse hinzugefügt, um Informationen 
