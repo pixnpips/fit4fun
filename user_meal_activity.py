@@ -29,3 +29,20 @@ class Meal:
 
     def count_cals(self):
         pass
+
+class WeightEntry:
+    def __init__(self, date, weight):
+        self.date = date
+        self.weight = weight
+        
+        # Eintrag für das Gewicht hinzufügen
+weight_entry = WeightEntry("2024-01-01", 60.00)
+        # Eintrag für das Gewicht hinzufügen
+weight_entry = WeightEntry("2024-02-02", 55.5)
+
+# Ausgabe von Informationen
+print(f"User: {self.name}, Age: {self.age}, Weight: {self.weight}, Fitness Level: {self.fl}")
+print(f"Weight Entry: Date: {weight_entry.date}, Weight: {weight_entry.weight}")
+print(f"Activity: Name: {activity.name}, Duration: {activity.duration}, Calories: {activity.calories}")
+print(f"Meal: First: {meal.first}, Quantity: {meal.fq}, Second: {meal.second}, Quantity: {meal.sq}, Drink: {meal.drink}, Quantity: {meal.dq}")
+#In diesem Beispiel wurde die WeightEntry-Klasse hinzugefügt, um Informationen 
