@@ -41,7 +41,6 @@ class Database:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     weight REAL,
                     goal_weight REAL,  -- Neue Spalte für das Zielgewicht
-                    UNIQUE(name)
                     date TEXT
                 )
             ''')
