@@ -5,6 +5,11 @@ class User:
         self.weight = weight
         self.fl = fitness_level
 
+    # Beispiel für die Verwendung der Klasse User
+user = User("Mareenika", 28, 60, "Intermediate")
+
+    # Ausgabe von Informationen
+print(f"User: {user.name}, Age: {user.age}, Weight: {user.weight}, Fitness Level: {user.fl}")
 
 class Activity:
     def __init__(self, name, duration, calories):
@@ -53,8 +58,8 @@ weight_entry = WeightEntry("2024-01-01", 60.00)
 weight_entry = WeightEntry("2024-02-02", 55.5)
 
 # Ausgabe von Informationen
-#print(f"User: {user.name}, Age: {user.age}, Weight: {user.weight}, Fitness Level: {user.fl}")
+print(f"User: {user.name}, Age: {user.age}, Weight: {user.weight}, Fitness Level: {user.fl}")
 print(f"Weight Entry: Date: {weight_entry.date}, Weight: {weight_entry.weight}")
 print(f"Activity: Name: {activity.name}, Duration: {activity.duration}, Calories: {activity.calories}")
 print(f"Meal: First: {meal.first}, Quantity: {meal.fq}, Second: {meal.second}, Quantity: {meal.sq}, Drink: {meal.drink}, Quantity: {meal.dq}")
-#In diesem Beispiel wurde die WeightEntry-Klasse hinzugefügt, um Informationen 
+#In diesem Beispiel wurde die WeightEntry-Klasse hinzugefügt
