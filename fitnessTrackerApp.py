@@ -1,19 +1,67 @@
 import tkinter as tki
+from views import Startview, Userview, Trainingview, Trainingrecordview
 from tkinter import font as tkfont
 from datetime import datetime
-from views import *
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from database import Database
 
+class Weightview(tki.Frame):
+    def __init__(self, parent, controller):
+        tki.Frame.__init__(self, parent)
+        self.controller = controller
+        self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
 
-class FitnessTrackerApp(tk.Tk):
+    def show_weight_logs(self):
+        # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
+        neues_fenster = tki.Toplevel(self.controller.container)
+        weight_logs_frame = tki.Frame(neues_fenster)
+        weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
+
+        # Ein Label für die Spaltenüberschriften
+        tki.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
+        tki.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+
+        # Gewichtsverlauf aus der Datenbank abrufen
+        with self.controller.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+            weight_logs = cursor.fetchall()
+
+        # Gewichtsverlauf im Frame anzeigen
+        for index, log in enumerate(weight_logs, start=1):
+            tki.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
+            tki.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
+
+        # Zielgewichtslinie hinzufügen
+        plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
+
+        # Gewichtsverlauf als roten Graphen anzeigen
+        weights = [log[0] for log in weight_logs]
+        dates = [log[1] for log in weight_logs]
+
+        fig, ax = plt.subplots()
+        ax.plot(dates, weights, color='red', marker='o', label='Werte')
+        ax.set_title('Gewichtsverlauf')
+        ax.set_xlabel('Datum')
+        ax.set_ylabel('Gewicht (kg)')
+        ax.legend()
+
+        canvas = FigureCanvasTkAgg(fig, master=neues_fenster)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.grid(row=16, column=2, padx=10, pady=10)
+
+        canvas.draw()
+        
+class FitnessTrackerApp(tki.Tk):
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
+        tki.Tk.__init__(self, *args, **kwargs)
 
         #Titel und Schriftart
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
         #self.container wird erstellt, der alle Frames beinhaltet
-        self.container = tk.Frame(self)
+        self.container = tki.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
@@ -215,8 +263,8 @@ class FitnessTrackerApp(tk.Tk):
     def show_workouts(self):
         # Ein Frame erstellen, um Trainingsaktivitäten anzuzeigen
 
-        neues_fenster = tk.Toplevel(self.container)
-        workouts_frame = tk.Frame(neues_fenster)
+        neues_fenster = tki.Toplevel(self.container)
+        workouts_frame = tki.Frame(neues_fenster)
 
         workouts_frame.pack()
 
@@ -224,8 +272,8 @@ class FitnessTrackerApp(tk.Tk):
         cursor = connection.cursor()
 
         # Ein Label für die Spaltenüberschriften
-        tk.Label(workouts_frame, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
-        tk.Label(workouts_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+        tki.Label(workouts_frame, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
+        tki.Label(workouts_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
 
         # Trainingsaktivitäten aus der Datenbank abrufen
         cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
@@ -235,14 +283,14 @@ class FitnessTrackerApp(tk.Tk):
 
         # Trainingsaktivitäten im Frame anzeigen
         for index, workout in enumerate(workouts, start=1):
-            tk.Label(workouts_frame, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
-            tk.Label(workouts_frame, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
+            tki.Label(workouts_frame, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
+            tki.Label(workouts_frame, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
 
 
 
     def show_meals(self):
         # Ein Frame erstellen, um Mahlzeiten anzuzeigen
-        neues_fenster = tk.Toplevel(self.container)
+        neues_fenster = tki.Toplevel(self.container)
 
         connection = self.db.get_connection()
         cursor = connection.cursor()
@@ -267,7 +315,7 @@ class FitnessTrackerApp(tk.Tk):
 
     def show_weight_logs(self):
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        neues_fenster = tk.Toplevel(self.container)
+        neues_fenster = tki.Toplevel(self.container)
 
         connection = self.db.get_connection()
         cursor = connection.cursor()
@@ -304,7 +352,8 @@ class FitnessTrackerApp(tk.Tk):
 
         self.Trainingrecordview.safe_workout_button.configure(command=self.record_workout)
 
-
 if __name__ == "__main__":
     app = FitnessTrackerApp()
+    weight_view = Weightview(app, controller=app)
+    app.frames['wv'] = weight_view
     app.mainloop()

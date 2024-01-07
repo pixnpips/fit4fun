@@ -40,6 +40,8 @@ class Database:
                 CREATE TABLE IF NOT EXISTS weight_logs (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     weight REAL,
+                    goal_weight REAL,  -- Neue Spalte für das Zielgewicht
+                    UNIQUE(name)
                     date TEXT
                 )
             ''')
