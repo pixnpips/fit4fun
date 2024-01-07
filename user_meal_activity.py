@@ -54,8 +54,7 @@ class WeightEntry:
         
         # Eintrag für das Gewicht hinzufügen
 weight_entry = WeightEntry("2024-01-01", 60.00)
-        # Eintrag für das Gewicht hinzufügen
-weight_entry = WeightEntry("2024-02-02", 55.5)
+weight_entry = WeightEntry("2024-02-01", 55.50)
 
 # Ausgabe von Informationen
 print(f"User: {user.name}, Age: {user.age}, Weight: {user.weight}, Fitness Level: {user.fl}")
