@@ -161,7 +161,7 @@ class FitnessTrackerApp(tki.Tk):
 
         # Trainingsaktivität in die Datenbank einfügen
 
-        cursor.execute("INSERT INTO workouts (activity, date) VALUES (?, ?)", (activity, current_date))
+        cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (activity, current_date))
 
         # Meldung anzeigen, dass die Trainingsaktivität erfolgreich aufgezeichnet wurde
         self.Trainingrecordview.message_Label.configure(text=f"Trainingsaktivität '{activity}' erfolgreich aufgezeichnet.",
