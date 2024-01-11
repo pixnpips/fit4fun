@@ -1,57 +1,8 @@
 import tkinter as tki
-from views import Startview, Userview, Trainingview, Trainingrecordview
+from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview
 from tkinter import font as tkfont
 from datetime import datetime
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from database import Database
-
-class Weightview(tki.Frame):
-    def __init__(self, parent, controller):
-        tki.Frame.__init__(self, parent)
-        self.controller = controller
-        self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
-
-    def show_weight_logs(self):
-        # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        neues_fenster = tki.Toplevel(self.controller.container)
-        weight_logs_frame = tki.Frame(neues_fenster)
-        weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
-
-        # Ein Label für die Spaltenüberschriften
-        tki.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
-        tki.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
-
-        # Gewichtsverlauf aus der Datenbank abrufen
-        with self.controller.db.get_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
-            weight_logs = cursor.fetchall()
-
-        # Gewichtsverlauf im Frame anzeigen
-        for index, log in enumerate(weight_logs, start=1):
-            tki.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
-            tki.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
-
-        # Zielgewichtslinie hinzufügen
-        plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
-
-        # Gewichtsverlauf als roten Graphen anzeigen
-        weights = [log[0] for log in weight_logs]
-        dates = [log[1] for log in weight_logs]
-
-        fig, ax = plt.subplots()
-        ax.plot(dates, weights, color='red', marker='o', label='Werte')
-        ax.set_title('Gewichtsverlauf')
-        ax.set_xlabel('Datum')
-        ax.set_ylabel('Gewicht (kg)')
-        ax.legend()
-
-        canvas = FigureCanvasTkAgg(fig, master=neues_fenster)
-        canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=16, column=2, padx=10, pady=10)
-
-        canvas.draw()
         
 class FitnessTrackerApp(tki.Tk):
     def __init__(self, *args, **kwargs):
@@ -75,16 +26,25 @@ class FitnessTrackerApp(tki.Tk):
         self.Userview = Userview(parent=self.container, controller=self)
         self.Trainingview = Trainingview(parent=self.container, controller=self)
         self.Trainingrecordview = Trainingrecordview(parent=self.container, controller=self)
+        self.Mealview = Mealview (parent=self.container, controller=self)
+        self.Mealrecordview = Mealrecordview (parent=self.container, controller=self)
+        self.Weightview = Weightview(parent=self.container, controller=self)
 
         self.frames['sv'] = self.Startview
         self.frames['uv'] = self.Userview
         self.frames['tv'] = self.Trainingview
         self.frames['trv'] = self.Trainingrecordview
+        self.frames['mv'] = self.Mealview
+        self.frames['mrv'] = self.Mealrecordview
+        self.frames['wv'] = self.Weightview
 
         self.Startview.grid(row=0, column=0, sticky="nsew")
         self.Userview.grid(row=0, column=0, sticky="nsew")
         self.Trainingview.grid(row=0, column=0, sticky="nsew")
         self.Trainingrecordview.grid(row=0, column=0, sticky="nsew")
+        self.Mealview.grid(row=0, column=0, sticky="nsew")
+        self.Mealrecordview.grid(row=0, column=0, sticky="nsew")
+        self.Weightview.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("sv")
         # SQLite-Datenbankverbindung herstellen
@@ -127,7 +87,7 @@ class FitnessTrackerApp(tki.Tk):
 
 
         # Gewichtsverlauf in die Datenbank einfügen
-        cursor.execute("INSERT INTO user (name, age, weight, goal_weight,fl) VALUES (?, ?, ?, ? )", (name, age, weight, fl ))
+        cursor.execute("INSERT INTO user (name, age, weight, fl) VALUES (?,?,?,?)", (name, age, weight, fl ))
 
 
         # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
@@ -177,7 +137,7 @@ class FitnessTrackerApp(tki.Tk):
 
     def record_meal(self):
         # Eingabewerte vom Benutzer abrufen
-        meal_name = self.Startview.meal_entry.get()
+        meal_name = self.Mealrecordview.meal_entry.get()
         print(meal_name)
 
         connection = self.db.get_connection()
@@ -186,7 +146,7 @@ class FitnessTrackerApp(tki.Tk):
         # Überprüfen, ob die Eingabe nicht leer ist
         if not meal_name:
             # Zeige eine Meldung an, dass das Feld nicht leer sein darf
-            self.Startview.message_Label.configure(text="Bitte geben Sie den Mahlzeitennamen ein.", foreground="red")
+            self.Mealrecordview.message_Label.configure(text="Bitte geben Sie den Mahlzeitennamen ein.", foreground="red")
 
             return
 
@@ -212,12 +172,12 @@ class FitnessTrackerApp(tki.Tk):
                                (meal_name, calories, current_date))
 
         # Meldung anzeigen, dass die Mahlzeit erfolgreich aufgezeichnet wurde
-        self.Startview.message_Label.configure(
+        self.Mealrecordview.message_Label.configure(
             text=f"Mahlzeit '{meal_name}' mit {calories} Kalorien erfolgreich aufgezeichnet.",
             foreground="green")
 
         # Eingabefelder leeren
-        self.Startview.meal_entry.delete(0, tki.END)
+        self.Mealrecordview.meal_entry.delete(0, tki.END)
         # self.calories_entry.delete(0, tki.END)
 
         cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
@@ -227,7 +187,6 @@ class FitnessTrackerApp(tki.Tk):
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
         weight = self.Startview.weight_entry.get()
-
         connection = self.db.get_connection()
         cursor = connection.cursor()
 
@@ -260,101 +219,35 @@ class FitnessTrackerApp(tki.Tk):
 
         print(weight_logs)
 
-    def show_workouts(self):
-        # Ein Frame erstellen, um Trainingsaktivitäten anzuzeigen
-
-        neues_fenster = tki.Toplevel(self.container)
-        workouts_frame = tki.Frame(neues_fenster)
-
-        workouts_frame.pack()
-
-        connection = self.db.get_connection()
-        cursor = connection.cursor()
-
-        # Ein Label für die Spaltenüberschriften
-        tki.Label(workouts_frame, text="Aktivität").grid(row=0, column=0, padx=5, pady=5)
-        tki.Label(workouts_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
-
-        # Trainingsaktivitäten aus der Datenbank abrufen
-        cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
-        workouts = cursor.fetchall()
-
-        print(workouts)
-
-        # Trainingsaktivitäten im Frame anzeigen
-        for index, workout in enumerate(workouts, start=1):
-            tki.Label(workouts_frame, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
-            tki.Label(workouts_frame, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
-
-
-
-    def show_meals(self):
-        # Ein Frame erstellen, um Mahlzeiten anzuzeigen
-        neues_fenster = tki.Toplevel(self.container)
-
-        connection = self.db.get_connection()
-        cursor = connection.cursor()
-
-        meals_frame = tki.Frame(neues_fenster)
-        meals_frame.grid(row=15, column=0, columnspan=2, pady=10)
-
-        # Ein Label für die Spaltenüberschriften
-        tki.Label(meals_frame, text="Mahlzeit").grid(row=0, column=0, padx=5, pady=5)
-        tki.Label(meals_frame, text="Kalorien").grid(row=0, column=1, padx=5, pady=5)
-        tki.Label(meals_frame, text="Datum").grid(row=0, column=2, padx=5, pady=5)
-
-        # Mahlzeiten aus der Datenbank abrufen
-        cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
-        meals = cursor.fetchall()
-
-        # Mahlzeiten im Frame anzeigen
-        for index, meal in enumerate(meals, start=1):
-            tki.Label(meals_frame, text=meal[0]).grid(row=index, column=0, padx=5, pady=5)
-            tki.Label(meals_frame, text=meal[1]).grid(row=index, column=1, padx=5, pady=5)
-            tki.Label(meals_frame, text=meal[2]).grid(row=index, column=2, padx=5, pady=5)
-
-    def show_weight_logs(self):
-        # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        neues_fenster = tki.Toplevel(self.container)
-
-        connection = self.db.get_connection()
-        cursor = connection.cursor()
-
-        weight_logs_frame = tki.Frame(neues_fenster)
-        weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
-
-        # Ein Label für die Spaltenüberschriften
-        tki.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
-        tki.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
-
-        # Gewichtsverlauf aus der Datenbank abrufen
-        cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
-        weight_logs = cursor.fetchall()
-
-        # Gewichtsverlauf im Frame anzeigen
-        for index, log in enumerate(weight_logs, start=1):
-            tki.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
-            tki.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
-
 
     #Hier werden alle Funktionen allen Buttons aller Views zugeordnet
     def map_button_functions(self):
-        self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
+
+        #Mapping der Funktionen in der Startview
+
         # self.Startview.show_workout_button.configure(command=self.show_workouts)
-        self.Startview.show_meal_button.configure(command=self.show_meals)
-        self.Startview.show_weight_button.configure(command=self.show_weight_logs)
+        self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
         # self.Startview.record_workout_button.configure(command=self.record_workout)
         self.Startview.record_workout_button.configure(command=lambda: self.show_frame("trv"))
-        self.Startview.record_meal_button.configure(command=self.record_meal)
+
+
+        # self.Startview.show_meal_button.configure(command=self.show_meals)
+        # self.Startview.record_meal_button.configure(command=self.record_meal)
+
+        self.Startview.show_meal_button.configure(command=lambda: self.show_frame('mv'))
+        self.Startview.record_meal_button.configure(command=lambda: self.show_frame('mrv'))
+
+        # self.Startview.show_weight_button.configure(command=self.show_weight_logs)
+        self.Startview.show_weight_button.configure(command=lambda:self.show_frame('wv'))
         self.Startview.record_weight_button.configure(command=self.record_weight)
 
-        self.Userview.create_user_button.configure(command=self.record_user)
+        #Mapping der Funktionen in allen anderen Views
 
+        self.Userview.create_user_button.configure(command=self.record_user)
         self.Trainingrecordview.safe_workout_button.configure(command=self.record_workout)
+        self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
 
         
 if __name__ == "__main__":
     app = FitnessTrackerApp()
-    weight_view = Weightview(app, controller=app)
-    app.frames['wv'] = weight_view
     app.mainloop()

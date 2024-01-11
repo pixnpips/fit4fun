@@ -3,6 +3,8 @@ from database import Database
 from tkinter import messagebox, ttk
 import sqlite3
 from datetime import datetime
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 
@@ -16,7 +18,7 @@ class Startview(tk.Frame):
         self.cursor = self.connection.cursor()
 
         self.weight_entry = tk.Entry(self)
-        self.meal_entry = tk.Entry(self)
+
 
         # Button um User zu erstellen
         self.create_user_button = tk.Button(self, text="User erstellen", command=lambda: controller.show_frame("uv"))
@@ -34,7 +36,7 @@ class Startview(tk.Frame):
         # Labels der Erstansicht
 
         self.name_label = tk.Label(self)
-        self.meal_Label = tk.Label(self, text="Mahlzeit:")
+
         self.weight_label = tk.Label(self, text="Gewicht (kg):")
         self.message_Label = tk.Label(self, text="lalala")
 
@@ -53,10 +55,6 @@ class Startview(tk.Frame):
             self.name_label.configure(text=name)
             self.name_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
-
-        # Label für Mahlzeiten
-        self.meal_Label.grid(row=2, column=0, padx=10, pady=10)
-        self.meal_entry.grid(row=2, column=1, padx=10, pady=10)
 
         # Label für Gewichtsverlauf
         self.weight_label.grid(row=3, column=0, padx=10, pady=10)
@@ -130,7 +128,7 @@ class Trainingview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
-        self.activity_label=tk.Label(self, text="Aktivität")
+        self.activity_label = tk.Label(self, text="Aktivität")
         self.date_label = tk.Label(self, text="Datum")
         self.calories_label = tk.Label(self, text="Kalorien")
 
@@ -145,9 +143,11 @@ class Trainingview(tk.Frame):
                            command=lambda: self.controller.show_frame("sv"))
         button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
 
-        self.cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
-        workouts = self.cursor.fetchall()
-        print('Workout' + str(workouts))
+        with self.controller.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
+            workouts = cursor.fetchall()
+            print('Workouts' + str(workouts))
 
         for index, workout in enumerate(workouts, start=1):
             tk.Label(self, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
@@ -201,28 +201,112 @@ class Mealview(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+        # Ein Label für die Spaltenüberschriften
+        self.meal_label = tk.Label( self, text="Mahlzeit")
+        self.calory_label = tk.Label(self,text="Kalorien")
+        self.date_label = tk.Label(self, text="Datum")
+
+    def show(self):
+        # Label für Mahlzeiten
+
+        self.meal_label.grid(row=0, column=0, padx=5, pady=5)
+        self.calory_label.grid(row=0, column=1, padx=5, pady=5)
+        self.date_label.grid(row=0, column=2, padx=5, pady=5)
+
+        with self.controller.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+            meals = cursor.fetchall()
+            print('Meals ' + str(meals))
+
+        # Mahlzeiten im Frame anzeigen
+        for index, meal in enumerate(meals, start=1):
+            tk.Label(self, text=meal[0]).grid(row=index, column=0, padx=5, pady=5)
+            tk.Label(self, text=meal[1]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(self, text=meal[2]).grid(row=index, column=2, padx=5, pady=5)
+
+
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: self.controller.show_frame("sv"))
+        button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
+
+
+
+class Mealrecordview(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.db = Database()
+        self.connection = self.db.get_connection()
+        self.cursor = self.connection.cursor()
+
+        self.meal_entry = tk.Entry(self)
+        self.meal_Label = tk.Label(self, text="Mahlzeit:")
+        self.message_Label = tk.Label(self, text="lalala")
+        self.record_meal_button = tk.Button(self, text="Mahlzeit aufzeichnen")
+
+
+
+    def show(self):
+
+        self.meal_Label.grid(row=2, column=0, padx=10, pady=10)
+        self.meal_entry.grid(row=2, column=1, padx=10, pady=10)
+
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: self.controller.show_frame("sv"))
+        button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
+        self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
+        self.record_meal_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+
 
 class Weightview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
 
-    def show_weight_logs(self):
+    def show(self):
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        weight_logs_frame = tk.Frame(self)
-        weight_logs_frame.grid(row=15, column=0, columnspan=2, pady=10)
+        # neues_fenster = tk.Toplevel(self.controller.container)
+        # weight_logs_frame = tk.Frame(neues_fenster)
+        # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
 
         # Ein Label für die Spaltenüberschriften
-        tk.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
-        tk.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(self, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(self, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: self.controller.show_frame("sv"))
+        button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
 
         # Gewichtsverlauf aus der Datenbank abrufen
-        with self.controller.conn:
-            cursor = self.controller.conn.cursor()
+        with self.controller.db.get_connection() as conn:
+            cursor = conn.cursor()
             cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
             weight_logs = cursor.fetchall()
+            print('Gewichtsverlauf' + str(weight_logs))
 
         # Gewichtsverlauf im Frame anzeigen
         for index, log in enumerate(weight_logs, start=1):
-            tk.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
-            tk.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(self, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
+            tk.Label(self, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
+
+        # Zielgewichtslinie hinzufügen
+        plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
+
+        # Gewichtsverlauf als roten Graphen anzeigen
+        weights = [log[0] for log in weight_logs]
+        dates = [log[1] for log in weight_logs]
+
+        fig, ax = plt.subplots()
+        ax.plot(dates, weights, color='red', marker='o', label='Werte')
+        ax.set_title('Gewichtsverlauf')
+        ax.set_xlabel('Datum')
+        ax.set_ylabel('Gewicht (kg)')
+        ax.legend()
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.grid(row=16, column=2, padx=10, pady=10)
+
+        canvas.draw()
