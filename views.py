@@ -2,6 +2,8 @@ import tkinter as tk # python 3
 from database import Database
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from tkinter import ttk
+from user_meal_activity_weight import *
 
 
 
@@ -162,7 +164,7 @@ class Trainingrecordview(tk.Frame):
         self.training_label = tk.Label(self, text="Trainingsaktivität:")
         self.workout_entry = tk.Entry(self)
         self.message_Label = tk.Label(self, text="lalala")
-        self.safe_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
+        self.safe_workout_button = tk.Button(self, text="Speichern")
 
     def show(self):
         self.training_label.grid(row=1, column=0, padx=10, pady=10)
@@ -219,17 +221,67 @@ class Mealrecordview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
-        self.meal_entry = tk.Entry(self)
-        self.meal_Label = tk.Label(self, text="Mahlzeit:")
-        self.message_Label = tk.Label(self, text="lalala")
-        self.record_meal_button = tk.Button(self, text="Mahlzeit aufzeichnen")
 
+        self.first_label = tk.Label(self, text="Hauptgericht:")
+        self.second_label = tk.Label(self, text="Beilage:")
+        self.drink_label = tk.Label(self, text="Getränk:")
+
+
+        # Liste der Elemente mit Text und Bildern
+        elements = [
+            {"text": "Element 1", "image": "image1.png"},
+            {"text": "Element 2", "image": "image2.png"},
+            {"text": "Element 3", "image": "image3.png"},
+            {"text": "Element 4", "image": "image4.png"},
+            {"text": "Element 5", "image": "image5.png"}
+        ]
+
+        # Dropdown-Menü erstellen
+
+
+        self.first_combo = ttk.Combobox(self, values=[element["text"] for element in elements], state="readonly")
+        self.first_combo.bind("<<ComboboxSelected>>", self.on_select(self.first_combo))
+
+        self.second_combo = ttk.Combobox(self, values=[element["text"] for element in elements], state="readonly")
+        self.second_combo.bind("<<ComboboxSelected>>", self.on_select(self.first_combo))
+
+        self.drink_combo = ttk.Combobox(self, values=[element["text"] for element in elements], state="readonly")
+        self.drink_combo.bind("<<ComboboxSelected>>", self.on_select(self.first_combo))
+
+        self.first_x_label = tk.Label(self, text="Menge:")
+        self.second_x_label = tk.Label(self, text="Menge:")
+        self.drink_x_label = tk.Label(self, text="Menge:")
+
+        self.first_x_entry = tk.Entry(self)
+        self.second_x_entry = tk.Entry(self)
+        self.drink_x_entry = tk.Entry(self)
+
+        self.message_Label = tk.Label(self, text="lalala")
+        self.record_meal_button = tk.Button(self, text="Speichern")
+
+    def on_select(self, combo):
+        selected_item = combo.get()
+        print(f"Ausgewählt: {selected_item}")
 
 
     def show(self):
 
-        self.meal_Label.grid(row=2, column=0, padx=10, pady=10)
-        self.meal_entry.grid(row=2, column=1, padx=10, pady=10)
+        self.first_label.grid(row=2, column=0, padx=10, pady=10)
+        self.first_combo.grid(row=2, column=1, padx=10, pady=10)
+        self.first_x_label.grid(row=2, column=2, padx=10, pady=10)
+        self.first_x_entry.grid(row=2, column=3, padx=10, pady=10)
+
+        self.second_label.grid(row=3, column=0, padx=10, pady=10)
+        self.second_combo.grid(row=3, column=1, padx=10, pady=10)
+        self.second_x_label.grid(row=3, column=2, padx=10, pady=10)
+        self.second_x_entry.grid(row=3, column=3, padx=10, pady=10)
+
+        self.drink_label.grid(row=4, column=0, padx=10, pady=10)
+        self.drink_combo.grid(row=4, column=1, padx=10, pady=10)
+        self.drink_x_label.grid(row=4, column=2, padx=10, pady=10)
+        self.drink_x_entry.grid(row=4, column=3, padx=10, pady=10)
+
+
 
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: self.controller.show_frame("sv"))

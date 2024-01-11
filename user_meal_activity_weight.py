@@ -28,7 +28,7 @@ class Meal:
 
     first = {'Tofu': 76, 'Seitan': 148, 'Chicken': 168, 'Beef': 250, 'Fish': 206}
     second = {'Potato': 76, 'Rice': 130, 'Noodles': 138, 'Bread': 240, 'Salat': 27}
-    drink = {'Water': 0, 'Limonade': 42, 'Juice': 54}
+    drink = {'Water': 0, 'Lemonade': 42, 'Juice': 54}
 
     def __init__(self, first, first_quant, sec, sec_quant, drink, drinkquant):
         self.first = first
@@ -39,13 +39,13 @@ class Meal:
         self.dq = drinkquant
 
     def count_cals(self):
+
         pass
     
     # Beispiel für die Verwendung der Klasse Meal
 meal = Meal("Chicken", 1, "Rice", 1, "Water", 2)
 
 print(f"Meal: First: {meal.first}, Quantity: {meal.fq}, Second: {meal.second}, Quantity: {meal.sq}, Drink: {meal.drink}")
-
 
 class WeightEntry:
     def __init__(self, date, weight):

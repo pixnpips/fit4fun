@@ -137,7 +137,7 @@ class FitnessTrackerApp(tki.Tk):
 
     def record_meal(self):
         # Eingabewerte vom Benutzer abrufen
-        meal_name = self.Mealrecordview.meal_entry.get()
+        meal_name = self.Mealrecordview.first_entry.get()
         print(meal_name)
 
         connection = self.db.get_connection()
@@ -177,7 +177,7 @@ class FitnessTrackerApp(tki.Tk):
             foreground="green")
 
         # Eingabefelder leeren
-        self.Mealrecordview.meal_entry.delete(0, tki.END)
+        self.Mealrecordview.first_entry.delete(0, tki.END)
         # self.calories_entry.delete(0, tki.END)
 
         cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")

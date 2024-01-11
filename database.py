@@ -2,7 +2,6 @@ import sqlite3
 
 
 class Database:
-
     # Erstellen eines Singletons für die Datenbankklasse
 
     _instance = None
@@ -13,7 +12,7 @@ class Database:
             cls._instance.connection = sqlite3.connect('fitness_tracker.db')
         return cls._instance
 
-    #Db Connection für alle Methoden und Klassenmethoden die eine Connection brauchen, Cursor einfach im Scope erstellen!
+    # Db Connection für alle Methoden und Klassenmethoden die eine Connection brauchen, Cursor einfach im Scope erstellen!
     def get_connection(self):
         return self.connection
 
