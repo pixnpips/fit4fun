@@ -190,12 +190,12 @@ class Weightview(tk.Frame):
 
     def show_weight_logs(self):
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        weight_logs_frame = ttk.Frame(self)
+        weight_logs_frame = tk.Frame(self)
         weight_logs_frame.grid(row=15, column=0, columnspan=2, pady=10)
 
         # Ein Label für die Spaltenüberschriften
-        ttk.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
-        ttk.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
 
         # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.conn:
@@ -205,5 +205,5 @@ class Weightview(tk.Frame):
 
         # Gewichtsverlauf im Frame anzeigen
         for index, log in enumerate(weight_logs, start=1):
-            ttk.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
-            ttk.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
+            tk.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)

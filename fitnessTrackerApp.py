@@ -127,7 +127,7 @@ class FitnessTrackerApp(tki.Tk):
 
 
         # Gewichtsverlauf in die Datenbank einfügen
-        cursor.execute("INSERT INTO user (name, age, weight, goal_weight,fl) VALUES (?, ?, ?, ? )", (name, age, weight, fl ))
+        cursor.execute("INSERT INTO user (name, age, weight, fl) VALUES (?,?,?,?)", (name, age, weight, fl ))
 
 
         # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
