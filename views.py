@@ -1,5 +1,6 @@
 import tkinter as tk # python 3
 from database import Database
+from tkinter import messagebox, ttk
 import sqlite3
 from datetime import datetime
 
@@ -131,12 +132,14 @@ class Trainingview(tk.Frame):
 
         self.activity_label=tk.Label(self, text="Aktivität")
         self.date_label = tk.Label(self, text="Datum")
+        self.calories_label = tk.Label(self, text="Kalorien")
 
 
     def show(self):
         # Ein Label für die Spaltenüberschriften
         self.activity_label.grid(row=0, column=0, padx=5, pady=5)
         self.date_label.grid(row=0, column=1, padx=5, pady=5)
+        self.calories_label.grid(row=0, column=2, padx=5, pady=5)
 
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: self.controller.show_frame("sv"))
@@ -149,6 +152,7 @@ class Trainingview(tk.Frame):
         for index, workout in enumerate(workouts, start=1):
             tk.Label(self, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
             tk.Label(self, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(self, text=workout[2]).grid(row=index, column=1, padx=5, pady=5)
 
 
 
@@ -161,8 +165,23 @@ class Trainingrecordview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
+        OPTIONS = [
+            "Running",
+            "Jogging",
+            "Walking",
+            "Swimming",
+            "Cycling",
+            "Basketball",
+            "Soccer",
+            "Tennis",
+            "Boxing",
+            "Yoga",
+            "Pilates",
+            "Weightlifting"
+        ]
+
         self.training_label = tk.Label(self, text="Trainingsaktivität:")
-        self.workout_entry = tk.Entry(self)
+        self.workout_entry = ttk.Combobox(self, state="readonly", values=OPTIONS)
         self.message_Label = tk.Label(self, text="lalala")
         self.safe_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
 
@@ -190,12 +209,12 @@ class Weightview(tk.Frame):
 
     def show_weight_logs(self):
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        weight_logs_frame = ttk.Frame(self)
+        weight_logs_frame = tk.Frame(self)
         weight_logs_frame.grid(row=15, column=0, columnspan=2, pady=10)
 
         # Ein Label für die Spaltenüberschriften
-        ttk.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
-        ttk.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(weight_logs_frame, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(weight_logs_frame, text="Datum").grid(row=0, column=1, padx=5, pady=5)
 
         # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.conn:
@@ -205,5 +224,5 @@ class Weightview(tk.Frame):
 
         # Gewichtsverlauf im Frame anzeigen
         for index, log in enumerate(weight_logs, start=1):
-            ttk.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
-            ttk.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(weight_logs_frame, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
+            tk.Label(weight_logs_frame, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
