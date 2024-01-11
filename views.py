@@ -1,7 +1,5 @@
 import tkinter as tk # python 3
 from database import Database
-import sqlite3
-from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -182,10 +180,6 @@ class Mealview(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        self.db = Database()
-        self.connection = self.db.get_connection()
-        self.cursor = self.connection.cursor()
-
         # Ein Label für die Spaltenüberschriften
         self.meal_label = tk.Label( self, text="Mahlzeit")
         self.calory_label = tk.Label(self,text="Kalorien")
@@ -198,9 +192,11 @@ class Mealview(tk.Frame):
         self.calory_label.grid(row=0, column=1, padx=5, pady=5)
         self.date_label.grid(row=0, column=2, padx=5, pady=5)
 
-        # Mahlzeiten aus der Datenbank abrufen
-        self.cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
-        meals = self.cursor.fetchall()
+        with self.controller.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+            meals = cursor.fetchall()
+            print('Meals ' + str(meals))
 
         # Mahlzeiten im Frame anzeigen
         for index, meal in enumerate(meals, start=1):
