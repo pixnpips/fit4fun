@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk
 from user_meal_activity_weight import *
+from PIL import Image, ImageTk
 
 
 
@@ -226,42 +227,46 @@ class Mealrecordview(tk.Frame):
         self.second_label = tk.Label(self, text="Beilage:")
         self.drink_label = tk.Label(self, text="Getränk:")
 
-
-        # Liste der Elemente mit Text und Bildern
-        elements = [
-            {"text": "Element 1", "image": "image1.png"},
-            {"text": "Element 2", "image": "image2.png"},
-            {"text": "Element 3", "image": "image3.png"},
-            {"text": "Element 4", "image": "image4.png"},
-            {"text": "Element 5", "image": "image5.png"}
-        ]
+        self.M = Meal()
 
         # Dropdown-Menü erstellen
 
+        self.first_combo = ttk.Combobox(self, values=[element["name"] for element in Meal.first], state="readonly")
+        self.first_combo.current(0)
+        # self.first_combo.bind("<<ComboboxSelected>>", self.calc_cal)
 
-        self.first_combo = ttk.Combobox(self, values=[element["text"] for element in elements], state="readonly")
-        self.first_combo.bind("<<ComboboxSelected>>", self.on_select(self.first_combo))
+        self.second_combo = ttk.Combobox(self, values=[element["name"] for element in Meal.second], state="readonly")
+        self.second_combo.current(0)
+        # self.second_combo.bind("<<ComboboxSelected>>", self.calc_cal)
 
-        self.second_combo = ttk.Combobox(self, values=[element["text"] for element in elements], state="readonly")
-        self.second_combo.bind("<<ComboboxSelected>>", self.on_select(self.first_combo))
+        self.drink_combo = ttk.Combobox(self, values=[element["name"] for element in Meal.drink], state="readonly")
+        self.drink_combo.current(0)
+        # self.drink_combo.bind("<<ComboboxSelected>>", self.calc_cal)
 
-        self.drink_combo = ttk.Combobox(self, values=[element["text"] for element in elements], state="readonly")
-        self.drink_combo.bind("<<ComboboxSelected>>", self.on_select(self.first_combo))
+        # # scaled_images = [self.scale_image(element["pic"], 50, 50) for element in Meal.first]
+        # scaled_images = ['img/meal/0.png','img/meal/0.png','img/meal/0.png','img/meal/0.png','img/meal/0.png','img/meal/0.png','img/meal/0.png']
+        # self.first_combo["image"] = scaled_images
 
-        self.first_x_label = tk.Label(self, text="Menge:")
-        self.second_x_label = tk.Label(self, text="Menge:")
-        self.drink_x_label = tk.Label(self, text="Menge:")
+        self.first_x_label = tk.Label(self, text="Menge (in g):")
+        self.second_x_label = tk.Label(self, text="Menge (in g):")
+        self.drink_x_label = tk.Label(self, text="Menge(in g):")
 
         self.first_x_entry = tk.Entry(self)
+        self.first_x_entry.insert(0, '0')
+
         self.second_x_entry = tk.Entry(self)
+        self.second_x_entry.insert(0, '0')
+
         self.drink_x_entry = tk.Entry(self)
+        self.drink_x_entry.insert(0, '0')
 
         self.message_Label = tk.Label(self, text="lalala")
         self.record_meal_button = tk.Button(self, text="Speichern")
 
-    def on_select(self, combo):
-        selected_item = combo.get()
-        print(f"Ausgewählt: {selected_item}")
+    # def on_select(self, combo):
+    #     selected_item = combo.get()
+    #     print(f"Ausgewählt: " + str(selected_item))
+
 
 
     def show(self):

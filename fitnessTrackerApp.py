@@ -3,6 +3,7 @@ from views import Startview, Userview, Trainingview, Trainingrecordview, Mealvie
 from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
+from user_meal_activity_weight import *
         
 class FitnessTrackerApp(tki.Tk):
     def __init__(self, *args, **kwargs):
@@ -135,19 +136,41 @@ class FitnessTrackerApp(tki.Tk):
 
         print(workouts)
 
+
     def record_meal(self):
         # Eingabewerte vom Benutzer abrufen
-        meal_name = self.Mealrecordview.first_entry.get()
-        print(meal_name)
+        first = self.Mealrecordview.first_combo.get()
+        second = self.Mealrecordview.second_combo.get()
+        drink = self.Mealrecordview.drink_combo.get()
+
+        firstq = self.Mealrecordview.first_x_entry.get()
+        secondq = self.Mealrecordview.second_x_entry.get()
+        drinkq = self.Mealrecordview.drink_x_entry.get()
 
         connection = self.db.get_connection()
         cursor = connection.cursor()
 
         # Überprüfen, ob die Eingabe nicht leer ist
-        if not meal_name:
+        if first != 'Bitte wählen' and firstq == '0':
             # Zeige eine Meldung an, dass das Feld nicht leer sein darf
-            self.Mealrecordview.message_Label.configure(text="Bitte geben Sie den Mahlzeitennamen ein.", foreground="red")
+            self.Mealrecordview.message_Label.configure(text="Bitte geben Sie die Menge des Hauptgerichtes in Gramm ein.", foreground="red")
+            return
 
+        if second != 'Bitte wählen' and secondq == '0':
+            # Zeige eine Meldung an, dass das Feld nicht leer sein darf
+            self.Mealrecordview.message_Label.configure(
+                text="Bitte geben Sie die Menge der Beilage in Gramm ein.", foreground="red")
+            return
+
+        if drink != 'Bitte wählen' and drinkq == '0':
+            # Zeige eine Meldung an, dass das Feld nicht leer sein darf
+            self.Mealrecordview.message_Label.configure(
+                text="Bitte geben Sie die Menge des Getränks in Gramm ein.", foreground="red")
+            return
+
+        if first == second == drink == "Bitte wählen":
+            self.Mealrecordview.message_Label.configure(
+                text="Bitte geben sie mindestens ein Gericht oder Getränk ein.", foreground="red")
             return
 
         # Eingabewerte vom Benutzer abrufen
@@ -164,25 +187,29 @@ class FitnessTrackerApp(tki.Tk):
              grid(row=10, column=0, columnspan=2, pady=10))
             return
 
+
         # Aktuelles Datum und Uhrzeit abrufen
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Mahlzeit in die Datenbank einfügen
         cursor.execute("INSERT INTO meals (meal_name, calories, date) VALUES (?, ?, ?)",
-                               (meal_name, calories, current_date))
+                               (first+', ' + second + ', ' + drink, calories, current_date))
 
         # Meldung anzeigen, dass die Mahlzeit erfolgreich aufgezeichnet wurde
         self.Mealrecordview.message_Label.configure(
-            text=f"Mahlzeit '{meal_name}' mit {calories} Kalorien erfolgreich aufgezeichnet.",
+            text=f"Mahlzeit '{first}', {second} und {drink} mit {calories} Kalorien erfolgreich aufgezeichnet.",
             foreground="green")
 
         # Eingabefelder leeren
-        self.Mealrecordview.first_entry.delete(0, tki.END)
+        self.Mealrecordview.first_combo.delete(0, tki.END)
         # self.calories_entry.delete(0, tki.END)
 
-        cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
-        meals = cursor.fetchall()
-        print(meals)
+        # cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+        # meals = cursor.fetchall()
+        # print(meals)
+
+        print(first)
+        print(firstq)
 
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
