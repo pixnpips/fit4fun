@@ -158,6 +158,12 @@ class Trainingview(tk.Frame):
 
 class Trainingrecordview(tk.Frame):
 
+    def callback(self, P):
+        if str.isdigit(P) or P == "":
+            return True
+        else:
+            return False
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -180,20 +186,26 @@ class Trainingrecordview(tk.Frame):
             "Weightlifting"
         ]
 
+        is_number = (self.register(self.callback))
+
         self.training_label = tk.Label(self, text="Trainingsaktivität:")
         self.workout_entry = ttk.Combobox(self, state="readonly", values=OPTIONS)
-        self.message_Label = tk.Label(self, text="lalala")
+        self.duration_label = tk.Label(self, text="Minuten:")
+        self.duration_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
+        self.message_Label = tk.Label(self, text="")
         self.safe_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
 
     def show(self):
         self.training_label.grid(row=1, column=0, padx=10, pady=10)
         self.workout_entry.grid(row=1, column=1, padx=10, pady=10)
+        self.duration_label.grid(row=2, column=0, padx=10, pady=10)
+        self.duration_entry.grid(row=2, column=1, padx=10, pady=10)
         self.safe_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
 
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
+        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
 
 
 class Mealview(tk.Frame):
