@@ -1,3 +1,4 @@
+import tkinter
 import tkinter as tk # python 3
 from database import Database
 import matplotlib.pyplot as plt
@@ -227,8 +228,6 @@ class Mealrecordview(tk.Frame):
         self.second_label = tk.Label(self, text="Beilage:")
         self.drink_label = tk.Label(self, text="Getränk:")
 
-        self.M = Meal()
-
         # Dropdown-Menü erstellen
 
         self.first_combo = ttk.Combobox(self, values=[element["name"] for element in Meal.first], state="readonly")
@@ -286,13 +285,25 @@ class Mealrecordview(tk.Frame):
         self.drink_x_label.grid(row=4, column=2, padx=10, pady=10)
         self.drink_x_entry.grid(row=4, column=3, padx=10, pady=10)
 
-
-
-        button = tk.Button(self, text="Go to the start page",
-                           command=lambda: self.controller.show_frame("sv"))
+        button = tk.Button(self, text="Go to the start page", command=self.reset)
         button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
         self.record_meal_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+
+    def reset(self):
+
+        y = tk.StringVar()
+        y.set('0')
+
+        for x in self.drink_x_entry, self.first_x_entry, self.second_x_entry:
+            x.configure(textvariable=y)
+
+        for x in self.first_combo, self.second_combo, self.drink_combo:
+            x.current(0)
+
+        self.message_Label.configure(text='')
+
+        self.controller.show_frame("sv")
 
 
 class Weightview(tk.Frame):

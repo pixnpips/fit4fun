@@ -4,31 +4,32 @@ from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
 from user_meal_activity_weight import *
-        
+
+
 class FitnessTrackerApp(tki.Tk):
     def __init__(self, *args, **kwargs):
         tki.Tk.__init__(self, *args, **kwargs)
 
-        #Titel und Schriftart
+        # Titel und Schriftart
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
 
-        #self.container wird erstellt, der alle Frames beinhaltet
+        # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tki.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
 
-        #Liste der Frames
+        # Liste der Frames
         self.frames = {}
 
-        #View Objekte erzeugen und in den Frame packen
+        # View Objekte erzeugen und in den Frame packen
 
         self.Startview = Startview(parent=self.container, controller=self)
         self.Userview = Userview(parent=self.container, controller=self)
         self.Trainingview = Trainingview(parent=self.container, controller=self)
         self.Trainingrecordview = Trainingrecordview(parent=self.container, controller=self)
-        self.Mealview = Mealview (parent=self.container, controller=self)
-        self.Mealrecordview = Mealrecordview (parent=self.container, controller=self)
+        self.Mealview = Mealview(parent=self.container, controller=self)
+        self.Mealrecordview = Mealrecordview(parent=self.container, controller=self)
         self.Weightview = Weightview(parent=self.container, controller=self)
 
         self.frames['sv'] = self.Startview
@@ -63,7 +64,6 @@ class FitnessTrackerApp(tki.Tk):
         frame.show()
         frame.tkraise()
 
-
     def record_user(self):
 
         name = self.Userview.name_entry.get()
@@ -86,14 +86,12 @@ class FitnessTrackerApp(tki.Tk):
 
             return
 
-
         # Gewichtsverlauf in die Datenbank einfügen
-        cursor.execute("INSERT INTO user (name, age, weight, fl) VALUES (?,?,?,?)", (name, age, weight, fl ))
-
+        cursor.execute("INSERT INTO user (name, age, weight, fl) VALUES (?,?,?,?)", (name, age, weight, fl))
 
         # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
         self.Userview.message_Label.configure(text=f"Hallo {name}, es kann losgehen",
-                                               foreground="green")
+                                              foreground="green")
 
         # Eingabefelder leeren
         self.Startview.weight_entry.delete(0, tki.END)
@@ -125,8 +123,9 @@ class FitnessTrackerApp(tki.Tk):
         cursor.execute("INSERT INTO workouts (activity, date) VALUES (?, ?)", (activity, current_date))
 
         # Meldung anzeigen, dass die Trainingsaktivität erfolgreich aufgezeichnet wurde
-        self.Trainingrecordview.message_Label.configure(text=f"Trainingsaktivität '{activity}' erfolgreich aufgezeichnet.",
-                                           foreground="green")
+        self.Trainingrecordview.message_Label.configure(
+            text=f"Trainingsaktivität '{activity}' erfolgreich aufgezeichnet.",
+            foreground="green")
 
         # Eingabefelder leeren
         self.Trainingrecordview.workout_entry.delete(0, tki.END)
@@ -136,33 +135,38 @@ class FitnessTrackerApp(tki.Tk):
 
         print(workouts)
 
-
     def record_meal(self):
         # Eingabewerte vom Benutzer abrufen
         first = self.Mealrecordview.first_combo.get()
         second = self.Mealrecordview.second_combo.get()
         drink = self.Mealrecordview.drink_combo.get()
 
-        firstq = self.Mealrecordview.first_x_entry.get()
-        secondq = self.Mealrecordview.second_x_entry.get()
-        drinkq = self.Mealrecordview.drink_x_entry.get()
+        meal = Meal()
+        meal.first = Meal.first[self.Mealrecordview.first_combo.current()]
+        meal.second = Meal.second[self.Mealrecordview.second_combo.current()]
+        meal.drink = Meal.drink[self.Mealrecordview.drink_combo.current()]
+
+        meal.fq = int(self.Mealrecordview.first_x_entry.get())
+        meal.sq = int(self.Mealrecordview.second_x_entry.get())
+        meal.dq = int(self.Mealrecordview.drink_x_entry.get())
 
         connection = self.db.get_connection()
         cursor = connection.cursor()
 
         # Überprüfen, ob die Eingabe nicht leer ist
-        if first != 'Bitte wählen' and firstq == '0':
+        if first != 'Bitte wählen' and meal.fq == 0:
             # Zeige eine Meldung an, dass das Feld nicht leer sein darf
-            self.Mealrecordview.message_Label.configure(text="Bitte geben Sie die Menge des Hauptgerichtes in Gramm ein.", foreground="red")
+            self.Mealrecordview.message_Label.configure(
+                text="Bitte geben Sie die Menge des Hauptgerichtes in Gramm ein.", foreground="red")
             return
 
-        if second != 'Bitte wählen' and secondq == '0':
+        if second != 'Bitte wählen' and meal.sq == 0:
             # Zeige eine Meldung an, dass das Feld nicht leer sein darf
             self.Mealrecordview.message_Label.configure(
                 text="Bitte geben Sie die Menge der Beilage in Gramm ein.", foreground="red")
             return
 
-        if drink != 'Bitte wählen' and drinkq == '0':
+        if drink != 'Bitte wählen' and meal.dq == 0:
             # Zeige eine Meldung an, dass das Feld nicht leer sein darf
             self.Mealrecordview.message_Label.configure(
                 text="Bitte geben Sie die Menge des Getränks in Gramm ein.", foreground="red")
@@ -173,43 +177,36 @@ class FitnessTrackerApp(tki.Tk):
                 text="Bitte geben sie mindestens ein Gericht oder Getränk ein.", foreground="red")
             return
 
+        if first == 'Bitte wählen':
+            first = ''
+
+        if second == 'Bitte wählen':
+            second = ''
+
+        if drink == 'Bitte wählen':
+            drink = ''
         # Eingabewerte vom Benutzer abrufen
         # calories = self.calories_entry.get()
-        calories = 100
-
-        # Überprüfen, ob die Eingabe eine positive Zahl ist
-        try:
-            calories = int(calories)
-            if calories <= 0:
-                raise ValueError("Die Kalorienanzahl muss eine positive Zahl sein.")
-        except ValueError:
-            (tki.Label( text="Bitte geben Sie eine gültige Kalorienanzahl ein.", foreground="red").
-             grid(row=10, column=0, columnspan=2, pady=10))
-            return
-
+        calories = meal.count_cals()
 
         # Aktuelles Datum und Uhrzeit abrufen
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Mahlzeit in die Datenbank einfügen
         cursor.execute("INSERT INTO meals (meal_name, calories, date) VALUES (?, ?, ?)",
-                               (first+', ' + second + ', ' + drink, calories, current_date))
+                       (first + ' ' + second + ' ' + drink, calories, current_date))
 
         # Meldung anzeigen, dass die Mahlzeit erfolgreich aufgezeichnet wurde
         self.Mealrecordview.message_Label.configure(
-            text=f"Mahlzeit '{first}', {second} und {drink} mit {calories} Kalorien erfolgreich aufgezeichnet.",
+            text=f"Mahlzeit {first} {second} {drink} mit {calories} Kalorien erfolgreich aufgezeichnet.",
             foreground="green")
 
-        # Eingabefelder leeren
-        self.Mealrecordview.first_combo.delete(0, tki.END)
         # self.calories_entry.delete(0, tki.END)
 
         # cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
         # meals = cursor.fetchall()
         # print(meals)
 
-        print(first)
-        print(firstq)
 
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
@@ -225,7 +222,7 @@ class FitnessTrackerApp(tki.Tk):
                 raise ValueError("Das Gewicht muss eine positive Zahl sein.")
         except ValueError:
             self.Startview.message_Label.configure(text="Bitte geben Sie eine gültige Gewichtsangabe ein.",
-                                               foreground="red")
+                                                   foreground="red")
 
             return
 
@@ -236,7 +233,8 @@ class FitnessTrackerApp(tki.Tk):
         cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (weight, current_date))
 
         # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
-        self.Startview.message_Label.configure(text=f"Gewicht {weight} kg erfolgreich aufgezeichnet.", foreground="green")
+        self.Startview.message_Label.configure(text=f"Gewicht {weight} kg erfolgreich aufgezeichnet.",
+                                               foreground="green")
 
         # Eingabefelder leeren
         self.Startview.weight_entry.delete(0, tki.END)
@@ -246,17 +244,15 @@ class FitnessTrackerApp(tki.Tk):
 
         print(weight_logs)
 
-
-    #Hier werden alle Funktionen allen Buttons aller Views zugeordnet
+    # Hier werden alle Funktionen allen Buttons aller Views zugeordnet
     def map_button_functions(self):
 
-        #Mapping der Funktionen in der Startview
+        # Mapping der Funktionen in der Startview
 
         # self.Startview.show_workout_button.configure(command=self.show_workouts)
         self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
         # self.Startview.record_workout_button.configure(command=self.record_workout)
         self.Startview.record_workout_button.configure(command=lambda: self.show_frame("trv"))
-
 
         # self.Startview.show_meal_button.configure(command=self.show_meals)
         # self.Startview.record_meal_button.configure(command=self.record_meal)
@@ -265,16 +261,16 @@ class FitnessTrackerApp(tki.Tk):
         self.Startview.record_meal_button.configure(command=lambda: self.show_frame('mrv'))
 
         # self.Startview.show_weight_button.configure(command=self.show_weight_logs)
-        self.Startview.show_weight_button.configure(command=lambda:self.show_frame('wv'))
+        self.Startview.show_weight_button.configure(command=lambda: self.show_frame('wv'))
         self.Startview.record_weight_button.configure(command=self.record_weight)
 
-        #Mapping der Funktionen in allen anderen Views
+        # Mapping der Funktionen in allen anderen Views
 
         self.Userview.create_user_button.configure(command=self.record_user)
         self.Trainingrecordview.safe_workout_button.configure(command=self.record_workout)
         self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
 
-        
+
 if __name__ == "__main__":
     app = FitnessTrackerApp()
     app.mainloop()

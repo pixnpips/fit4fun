@@ -47,7 +47,7 @@ class Meal:
         self.cals = 0
 
     def count_cals(self):
-        self.cals = (self.first['cal'] * self.fq + self.second['cal'] * self.sq + self.drink['cal'] * self.dq)/100
+        self.cals = int(self.first['cal'] * self.fq + self.second['cal'] * self.sq + self.drink['cal'] * self.dq)/100
         return self.cals
     
 # Beispiel für die Verwendung der Klasse Meal
