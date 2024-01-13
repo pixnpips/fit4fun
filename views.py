@@ -136,8 +136,8 @@ class Trainingview(tk.Frame):
     def show(self):
         # Ein Label für die Spaltenüberschriften
         self.activity_label.grid(row=0, column=0, padx=5, pady=5)
-        self.date_label.grid(row=0, column=1, padx=5, pady=5)
-        self.calories_label.grid(row=0, column=2, padx=5, pady=5)
+        self.calories_label.grid(row=0, column=1, padx=5, pady=5)
+        self.date_label.grid(row=0, column=2, padx=5, pady=5)
 
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: self.controller.show_frame("sv"))
@@ -145,14 +145,14 @@ class Trainingview(tk.Frame):
 
         with self.controller.db.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
+            cursor.execute("SELECT activity, calories, date FROM workouts ORDER BY date DESC")
             workouts = cursor.fetchall()
             print('Workouts' + str(workouts))
 
         for index, workout in enumerate(workouts, start=1):
             tk.Label(self, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
             tk.Label(self, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
-            tk.Label(self, text=workout[2]).grid(row=index, column=1, padx=5, pady=5)
+            tk.Label(self, text=workout[2]).grid(row=index, column=2, padx=5, pady=5)
 
 
 
