@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 
 
 class Startview(tk.Frame):
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -22,7 +23,6 @@ class Startview(tk.Frame):
         self.cursor = self.connection.cursor()
 
         self.weight_entry = tk.Entry(self)
-
 
         # Button um User zu erstellen
         self.create_user_button = tk.Button(self, text="User erstellen", command=lambda: controller.show_frame("uv"))
@@ -78,14 +78,21 @@ class Startview(tk.Frame):
 
 
 class Userview(tk.Frame):
+    def callback(self, P):
+        if str.isdigit(P) or P == "":
+            return True
+        else:
+            return False
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+        is_number = (self.register(self.callback))
+
         self.name_entry = tk.Entry(self)
-        self.age_entry = tk.Entry(self)
-        self.weight_entry = tk.Entry(self)
-        self.fl_entry = tk.Entry(self)
+        self.age_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
+        self.weight_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
+        self.fl_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
 
         # Labels der Erstansicht
         self.name_label = tk.Label(self, text="Name:")
