@@ -24,6 +24,7 @@ class Database:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     activity TEXT,
                     duration INTEGER,
+                    calories INTEGER,
                     date TEXT
                 )
             ''')

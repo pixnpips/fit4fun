@@ -102,12 +102,44 @@ class FitnessTrackerApp(tki.Tk):
         print(users)
 
     def record_workout(self):
-        # Eingabewerte vom Benutzer abrufen
-        activity = self.Trainingrecordview.workout_entry.get()
+
         connection = self.db.get_connection()
         cursor = connection.cursor()
 
+        # Eingabewerte vom Benutzer abrufen
+        activity = self.Trainingrecordview.workout_entry.get()
+        cal_per_min = 0
+        if activity == "Running":
+            cal_per_min = 17
+        elif activity == "Jogging":
+            cal_per_min = 15
+        elif activity == "Walking":
+            cal_per_min = 8
+        elif activity == "Swimming":
+            cal_per_min = 8
+        elif activity == "Cycling":
+            cal_per_min = 7
+        elif activity == "Basketball":
+            cal_per_min = 10
+        elif activity == "Soccer":
+            cal_per_min = 10
+        elif activity == "Tennis":
+            cal_per_min = 10
+        elif activity == "Boxing":
+            cal_per_min = 8
+        elif activity == "Yoga":
+            cal_per_min = 4
+        elif activity == "Pilates":
+            cal_per_min = 6
+        elif activity == "Weightlifting":
+            cal_per_min = 5
+        else:
+            cal_per_min = 0
+
         print(activity)
+        print(cal_per_min)
+
+        duration = self.Trainingrecordview.duration_entry.get()
 
         # Überprüfen, ob die Eingabe nicht leer ist
         if activity == "":
@@ -115,12 +147,22 @@ class FitnessTrackerApp(tki.Tk):
             self.Trainingrecordview.message_Label.configure(text='Bitte Training eingeben', foreground='red')
             return
 
+        if duration == "":
+            # Zeige eine Meldung an, dass das Feld nicht leer sein darf
+            self.Trainingrecordview.message_Label.configure(text='Bitte Länge Trainings eingeben', foreground='red')
+            return
+
+        calories = int(cal_per_min) * int(duration)
+
+        print(calories)
+
         # Aktuelles Datum und Uhrzeit abrufen
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Trainingsaktivität in die Datenbank einfügen
 
-        cursor.execute("INSERT INTO workouts (activity, date) VALUES (?, ?)", (activity, current_date))
+        # cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (activity, current_date))
+        cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (activity, int(duration), int(calories), current_date))
 
         # Meldung anzeigen, dass die Trainingsaktivität erfolgreich aufgezeichnet wurde
         self.Trainingrecordview.message_Label.configure(
