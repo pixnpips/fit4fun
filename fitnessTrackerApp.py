@@ -1,5 +1,5 @@
 import tkinter as tki
-from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview
+from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview, Weightrecordview
 from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
@@ -31,6 +31,7 @@ class FitnessTrackerApp(tki.Tk):
         self.Mealview = Mealview(parent=self.container, controller=self)
         self.Mealrecordview = Mealrecordview(parent=self.container, controller=self)
         self.Weightview = Weightview(parent=self.container, controller=self)
+        self.Weightrecordview = Weightrecordview(parent=self.container, controller=self)
 
         self.frames['sv'] = self.Startview
         self.frames['uv'] = self.Userview
@@ -39,6 +40,7 @@ class FitnessTrackerApp(tki.Tk):
         self.frames['mv'] = self.Mealview
         self.frames['mrv'] = self.Mealrecordview
         self.frames['wv'] = self.Weightview
+        self.frames['wrv'] = self.Weightrecordview
 
         self.Startview.grid(row=0, column=0, sticky="nsew")
         self.Userview.grid(row=0, column=0, sticky="nsew")
@@ -47,6 +49,7 @@ class FitnessTrackerApp(tki.Tk):
         self.Mealview.grid(row=0, column=0, sticky="nsew")
         self.Mealrecordview.grid(row=0, column=0, sticky="nsew")
         self.Weightview.grid(row=0, column=0, sticky="nsew")
+        self.Weightrecordview.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("sv")
         # SQLite-Datenbankverbindung herstellen
@@ -252,7 +255,7 @@ class FitnessTrackerApp(tki.Tk):
 
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
-        weight = self.Startview.weight_entry.get()
+        weight = self.Weightrecordview.weight_entry.get()
         connection = self.db.get_connection()
         cursor = connection.cursor()
 
@@ -263,7 +266,7 @@ class FitnessTrackerApp(tki.Tk):
             if weight <= 0:
                 raise ValueError("Das Gewicht muss eine positive Zahl sein.")
         except ValueError:
-            self.Startview.message_Label.configure(text="Bitte geben Sie eine gültige Gewichtsangabe ein.",
+            self.Weightrecordview.message_Label.configure(text="Bitte geben Sie eine gültige Gewichtsangabe ein.",
                                                    foreground="red")
 
             return
@@ -304,7 +307,7 @@ class FitnessTrackerApp(tki.Tk):
 
         # self.Startview.show_weight_button.configure(command=self.show_weight_logs)
         self.Startview.show_weight_button.configure(command=lambda: self.show_frame('wv'))
-        self.Startview.record_weight_button.configure(command=self.record_weight)
+        self.Startview.record_weight_button.configure(command=lambda: self.show_frame('wrv'))
 
         # Mapping der Funktionen in allen anderen Views
 
