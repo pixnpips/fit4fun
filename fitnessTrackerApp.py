@@ -67,7 +67,7 @@ class FitnessTrackerApp(tki.Tk):
     def record_user(self):
 
         name = self.Userview.name_entry.get()
-        age = self.Userview.weight_entry.get()
+        age = self.Userview.age_entry.get()
         weight = self.Userview.weight_entry.get()
         fl = self.Userview.fl_entry.get()
 
