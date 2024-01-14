@@ -256,6 +256,11 @@ class Mealview(tk.Frame):
 
 
 class Mealrecordview(tk.Frame):
+    def callback(self, P):
+        if str.isdigit(P) or P == "":
+            return True
+        else:
+            return False
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -263,6 +268,7 @@ class Mealrecordview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
+        is_number = (self.register(self.callback))
 
         self.first_label = tk.Label(self, text="Hauptgericht:")
         self.second_label = tk.Label(self, text="Beilage:")
@@ -290,13 +296,13 @@ class Mealrecordview(tk.Frame):
         self.second_x_label = tk.Label(self, text="Menge (in g):")
         self.drink_x_label = tk.Label(self, text="Menge(in g):")
 
-        self.first_x_entry = tk.Entry(self)
+        self.first_x_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
         self.first_x_entry.insert(0, '0')
 
-        self.second_x_entry = tk.Entry(self)
+        self.second_x_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
         self.second_x_entry.insert(0, '0')
 
-        self.drink_x_entry = tk.Entry(self)
+        self.drink_x_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
         self.drink_x_entry.insert(0, '0')
 
         self.message_Label = tk.Label(self, text="lalala")
