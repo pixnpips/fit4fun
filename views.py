@@ -34,8 +34,10 @@ class Startview(tk.Frame):
 
         # Buttons um Werte anzuzeigen
         self.record_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
-        self.show_workout_button = tk.Button(self, text="Trainingsaktivitäten anzeigen")
-        self.show_meal_button = tk.Button(self, text="Mahlzeiten anzeigen")
+        self.workout_label = tk.Label(self, text="letzte Trainingsaktivitäten")
+        self.show_workout_button = tk.Button(self, text="Alle Trainingsaktivitäten anzeigen")
+        self.meals_label = tk.Label(self, text="letzte Mahlzeiten")
+        self.show_meal_button = tk.Button(self, text="Alle Mahlzeiten anzeigen")
         self.show_weight_button = tk.Button(self, text="Gewichtsverlauf anzeigen")
 
         # Labels der Erstansicht
@@ -44,6 +46,9 @@ class Startview(tk.Frame):
 
         self.weight_label = tk.Label(self, text="Gewicht (kg):")
         self.message_Label = tk.Label(self, text="lalala")
+
+
+
 
         self.separator = ttk.Separator(self, orient='horizontal')
 
@@ -59,7 +64,7 @@ class Startview(tk.Frame):
             self.create_user_button.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
         else:
             self.create_user_button.grid_forget()
-            self.name_label.configure(text=name)
+            self.name_label.configure(text=name , font=('Helvetica', 18, 'bold'))
             self.name_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
         self.separator.grid(row=1, columnspan=3, sticky="ew")
@@ -70,16 +75,18 @@ class Startview(tk.Frame):
         # self.weight_entry.grid(row=3, column=1, padx=10, pady=10)
 
         # Buttons zum Recorden platzieren
-        self.record_meal_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
-        self.record_weight_button.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
+        self.record_weight_button.grid(row=3, column=0,padx=10, pady=10)
+        self.record_workout_button.grid(row=4, column=0, padx=10, pady=10)
+        self.record_meal_button.grid(row=5, column=0, padx=10, pady=10)
 
         # Buttons zum Anzeigen von Daten platzieren
-        self.show_workout_button.grid(row=7, column=0, columnspan=2, padx=10, pady=10)
-        self.show_meal_button.grid(row=8, column=0, columnspan=2, padx=10, pady=10)
-        self.show_weight_button.grid(row=9, column=0, columnspan=2, padx=10, pady=10)
+        self.show_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
+        self.workout_label.grid(row=4, column=1, padx=10, pady=10)
+        self.show_workout_button.grid(row=5, column=1, padx=10, pady=10)
+        self.meals_label.grid(row=6, column=1, padx=10, pady=10)
+        self.show_meal_button.grid(row=7, column=1, padx=10, pady=10)
 
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
-        self.record_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
 
 class Userview(tk.Frame):
@@ -283,6 +290,9 @@ class Mealrecordview(tk.Frame):
 
         is_number = (self.register(self.callback))
 
+        self.title_label = tk.Label(self, text="Mahlzeit speichern", font=('Helvetica', 18, 'bold'))
+        self.separator = ttk.Separator(self, orient='horizontal')
+
         self.first_label = tk.Label(self, text="Hauptgericht:")
         self.second_label = tk.Label(self, text="Beilage:")
         self.drink_label = tk.Label(self, text="Getränk:")
@@ -328,26 +338,28 @@ class Mealrecordview(tk.Frame):
 
 
     def show(self):
+        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
+        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
+        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
+        self.separator.grid(row=1, columnspan=4, sticky="ew")
 
-        self.first_label.grid(row=2, column=0, padx=10, pady=10)
-        self.first_combo.grid(row=2, column=1, padx=10, pady=10)
-        self.first_x_label.grid(row=2, column=2, padx=10, pady=10)
-        self.first_x_entry.grid(row=2, column=3, padx=10, pady=10)
+        self.first_label.grid(row=2, column=1, padx=10, pady=10)
+        self.first_combo.grid(row=2, column=2, padx=10, pady=10)
+        self.first_x_label.grid(row=3, column=1, padx=10, pady=10)
+        self.first_x_entry.grid(row=3, column=2, padx=10, pady=10)
 
-        self.second_label.grid(row=3, column=0, padx=10, pady=10)
-        self.second_combo.grid(row=3, column=1, padx=10, pady=10)
-        self.second_x_label.grid(row=3, column=2, padx=10, pady=10)
-        self.second_x_entry.grid(row=3, column=3, padx=10, pady=10)
+        self.second_label.grid(row=4, column=1, padx=10, pady=10)
+        self.second_combo.grid(row=4, column=2, padx=10, pady=10)
+        self.second_x_label.grid(row=5, column=1, padx=10, pady=10)
+        self.second_x_entry.grid(row=5, column=2, padx=10, pady=10)
 
-        self.drink_label.grid(row=4, column=0, padx=10, pady=10)
-        self.drink_combo.grid(row=4, column=1, padx=10, pady=10)
-        self.drink_x_label.grid(row=4, column=2, padx=10, pady=10)
-        self.drink_x_entry.grid(row=4, column=3, padx=10, pady=10)
+        self.drink_label.grid(row=6, column=1, padx=10, pady=10)
+        self.drink_combo.grid(row=6, column=2, padx=10, pady=10)
+        self.drink_x_label.grid(row=7, column=1, padx=10, pady=10)
+        self.drink_x_entry.grid(row=7, column=2, padx=10, pady=10)
 
-        button = tk.Button(self, text="Go to the start page", command=self.reset)
-        button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
-        self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
-        self.record_meal_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+        self.message_Label.grid(row=10, column=1, columnspan=2, pady=10)
+        self.record_meal_button.grid(row=8, column=1, columnspan=2, padx=10, pady=10)
 
     def reset(self):
 

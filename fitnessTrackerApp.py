@@ -11,7 +11,9 @@ class FitnessTrackerApp(tki.Tk):
         tki.Tk.__init__(self, *args, **kwargs)
 
         # Titel und Schriftart
+        self.title("Fit4Fun")
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.resizable(False, False)
 
         # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tki.Frame(self)
@@ -97,7 +99,7 @@ class FitnessTrackerApp(tki.Tk):
                                               foreground="green")
 
         # Eingabefelder leeren
-        self.Startview.weight_entry.delete(0, tki.END)
+        # self.Startview.weight_entry.delete(0, tki.END)
 
         cursor.execute("SELECT * FROM user")
         users = cursor.fetchall()
