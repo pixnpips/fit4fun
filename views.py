@@ -1,12 +1,14 @@
 import tkinter
 import tkinter as tk # python 3
 from database import Database
-from tkinter import messagebox, ttk
 import sqlite3
+from tkinter import messagebox, ttk
+import matplotlib.dates as mdates
 from datetime import datetime
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from tkinter import ttk
+import matplotlib.dates as mdates
 from user_meal_activity_weight import *
 from PIL import Image, ImageTk
 
@@ -20,8 +22,6 @@ class Startview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
-
-        self.weight_entry = tk.Entry(self)
 
 
         # Button um User zu erstellen
@@ -40,10 +40,7 @@ class Startview(tk.Frame):
         # Labels der Erstansicht
 
         self.name_label = tk.Label(self)
-
-        self.weight_label = tk.Label(self, text="Gewicht (kg):")
         self.message_Label = tk.Label(self, text="lalala")
-
 
 
     def show(self):
@@ -60,9 +57,7 @@ class Startview(tk.Frame):
             self.name_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
 
-        # Label für Gewichtsverlauf
-        self.weight_label.grid(row=3, column=0, padx=10, pady=10)
-        self.weight_entry.grid(row=3, column=1, padx=10, pady=10)
+      
 
         # Buttons zum Recorden platzieren
         self.record_meal_button.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
@@ -136,7 +131,6 @@ class Trainingview(tk.Frame):
         self.date_label = tk.Label(self, text="Datum")
         self.calories_label = tk.Label(self, text="Kalorien")
 
-
     def show(self):
         # Ein Label für die Spaltenüberschriften
         self.activity_label.grid(row=0, column=0, padx=5, pady=5)
@@ -146,7 +140,7 @@ class Trainingview(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: self.controller.show_frame("sv"))
         button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
-
+ 
         with self.controller.db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT activity, calories, date FROM workouts ORDER BY date DESC")
@@ -157,8 +151,6 @@ class Trainingview(tk.Frame):
             tk.Label(self, text=workout[0]).grid(row=index, column=0, padx=5, pady=5)
             tk.Label(self, text=workout[1]).grid(row=index, column=1, padx=5, pady=5)
             tk.Label(self, text=workout[2]).grid(row=index, column=2, padx=5, pady=5)
-
-
 
 class Trainingrecordview(tk.Frame):
 
@@ -338,55 +330,146 @@ class Mealrecordview(tk.Frame):
 
         self.controller.show_frame("sv")
 
-
 class Weightview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
+        self.weight_logs = []
+
+        # Label für die Spaltenüberschrift
+        self.weight_label = tk.Label(self, text="Gewicht in (kg)")
+        self.date_label = tk.Label(self, text="Datum")
+
+        # Graph für die Gewichtsanzeige
+        self.figure, self.ax = plt.subplots(figsize=(8, 4))
+        self.canvas = FigureCanvasTkAgg(self.figure, self)
+        self.canvas.get_tk_widget().grid(row=2, column=0, padx=10, pady=10)
+        self.canvas.draw()
+
+        # Add a toolbar (optional)
+        toolbar = ttk.Notebook(self)
+        toolbar.grid(row=0, column=0, columnspan=2)
+        toolbar.add(self.canvas.get_tk_widget(), text="Graph")
+
+        # Liste zum Speichern von Gewichtsdaten
+        self.weight_logs = []
+
+    def update_graph(self):
+        # Gewichtsdaten aus der Weightview-Klasse
+        weight_logs = self.weight_logs
+
+        # Extrahiere Gewichtsdaten und Datum für den Graphen
+        weights = [float(log[0]) for log in weight_logs]
+        dates = [mdates.datestr2num(log[1]) for log in weight_logs]  # Convert dates to numerical format
+
+        # Plotte die Gewichtsdaten in rot
+        self.ax.clear()
+        self.ax.plot(dates, weights, marker='o', linestyle='-', color='red')
+
+         #Beschriftungen hinzufügen
+        self.ax.set_xlabel('Datum')  
+        self.ax.set_ylabel('Gewicht') 
+        self.ax.set_title('Gewichtsverlauf')
+          
+        # Red line example (you can customize this based on your criteria)
+        if weights and weights[-1] > 100:
+            self.ax.axhline(y=100, color='red', linestyle='--', label='Critical Weight')
+
+        # Formatierung der x-Achse
+        self.ax.xaxis.set_major_locator(mdates.MonthLocator())  # Adjust as needed
+        self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))  # Adjust date format
+
+        # Rotate x-axis labels for better visibility
+        plt.xticks(rotation=45)
+
+        # Zeige den aktualisierten Graphen an
+        self.canvas.draw()
 
     def show(self):
-        # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        # neues_fenster = tk.Toplevel(self.controller.container)
-        # weight_logs_frame = tk.Frame(neues_fenster)
-        # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
+        # Label für Gewicht
+        self.weight_label.grid(row=0, column=0, padx=5, pady=5)
 
-        # Ein Label für die Spaltenüberschriften
-        tk.Label(self, text="Gewicht (kg)").grid(row=0, column=0, padx=5, pady=5)
-        tk.Label(self, text="Datum").grid(row=0, column=1, padx=5, pady=5)
-
-        button = tk.Button(self, text="Go to the start page",
-                           command=lambda: self.controller.show_frame("sv"))
+        button = tk.Button(self, text="Go to the start page", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=11, column=0, columnspan=1, padx=10, pady=10)
 
-        # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
-            weight_logs = cursor.fetchall()
-            print('Gewichtsverlauf' + str(weight_logs))
+            self.weight_logs = cursor.fetchall()  # Update the weight_logs attribute 
+            
+             
+class Weightrecordview(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.db = Database()
+        self.connection = self.db.get_connection()
+        self.cursor = self.connection.cursor()
+        
+        # Entry für Gewicht
+        self.weight_entry = tk.Entry(self)
+        self.weight_entry.insert(0, '0')
+        
+        # Entry für Datum
+        self.date_entry = tk.Entry(self)
+        self.date_entry.insert(0, datetime.now().strftime("%Y-%m-%d %H:%M:%S"))  # Standardwert auf das aktuelle Datum und die Uhrzeit
+        
+        self.record_weight_button = tk.Button(self, text="Gewicht aufzeichnen", command=self.record_weight)
+        
+        
 
-        # Gewichtsverlauf im Frame anzeigen
-        for index, log in enumerate(weight_logs, start=1):
-            tk.Label(self, text=log[0]).grid(row=index, column=0, padx=5, pady=5)
-            tk.Label(self, text=log[1]).grid(row=index, column=1, padx=5, pady=5)
+        # Button für Startview
+        self.back_button = tk.Button(self, text="Zurück zur Startseite", command=lambda: self.controller.show_frame("sv"))
+        self.show()
 
-        # Zielgewichtslinie hinzufügen
-        plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
+    def show(self):
+        self.weight_entry.grid(row=0, column=1, padx=10, pady=10)
+        self.date_entry.grid(row=1, column=1, padx=10, pady=10)  # Add this line to display date_entry
+        self.record_weight_button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+        self.back_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
-        # Gewichtsverlauf als roten Graphen anzeigen
-        weights = [log[0] for log in weight_logs]
-        dates = [log[1] for log in weight_logs]
+    def record_weight(self):
+        print("Record weight button clicked")
+        #Gewicht aus dem Eingabefeld abrufen
+        entered_weight = self.weight_entry.get()
+        entered_date = self.date_entry.get()  
 
-        fig, ax = plt.subplots()
-        ax.plot(dates, weights, color='red', marker='o', label='Werte')
-        ax.set_title('Gewichtsverlauf')
-        ax.set_xlabel('Datum')
-        ax.set_ylabel('Gewicht (kg)')
-        ax.legend()
+        try:
+            
+            # Das Gewicht in Float konvertieren
+            entered_weight = float(entered_weight)
 
-        canvas = FigureCanvasTkAgg(fig, master=self)
-        canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=16, column=2, padx=10, pady=10)
+           # Datum aus dem Eingabefeld abrufen
+            entered_date = self.date_entry.get()
 
-        canvas.draw()
+            # Das Gewicht mit dem eingegebenen Datum in die Datenbank einfügen
+            with self.controller.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (entered_weight, entered_date))
+                conn.commit()
+
+            # Fetch the latest data from the database
+            cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+            self.controller.Weightview.weight_logs = cursor.fetchall()
+
+            # Update weight_logs attribut in Weightview
+            self.controller.frames["Weightview"].weight_logs = self.weight_logs
+            
+            # Optional: Check if entered weight exceeds a threshold, show a red line in the graph
+            threshold = 100  # Replace with your desired threshold
+            if entered_weight > threshold:
+                self.controller.Weightview.show_red_line(threshold)
+            
+            # Update the graph in the Weightview class
+            self.controller.Weightview.update_graph()
+            
+            # Erfolgsmeldung anzeigen
+            messagebox.showinfo("Erfolg", "Gewicht erfolgreich aufgezeichnet!")
+            
+        except ValueError:
+            # Show an error message if the entered weight is not a valid number
+            messagebox.showerror("Fehler", "Ungültige Gewichtseingabe. Bitte geben Sie eine Zahl ein.")
+            
+        except Exception as e:
+            # Fehlermeldung anzeigen, wenn etwas schief geht
+            messagebox.showerror("Fehler", "Fehler beim Aufzeichnen des Gewichts: {str(e)}")

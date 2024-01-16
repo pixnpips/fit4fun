@@ -1,5 +1,5 @@
 import tkinter as tki
-from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview
+from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview, Weightrecordview
 from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
@@ -31,6 +31,7 @@ class FitnessTrackerApp(tki.Tk):
         self.Mealview = Mealview(parent=self.container, controller=self)
         self.Mealrecordview = Mealrecordview(parent=self.container, controller=self)
         self.Weightview = Weightview(parent=self.container, controller=self)
+        self.Weightrecordview = Weightrecordview(parent=self.container, controller=self)
 
         self.frames['sv'] = self.Startview
         self.frames['uv'] = self.Userview
@@ -39,6 +40,7 @@ class FitnessTrackerApp(tki.Tk):
         self.frames['mv'] = self.Mealview
         self.frames['mrv'] = self.Mealrecordview
         self.frames['wv'] = self.Weightview
+        self.frames['wrv'] = self.Weightrecordview
 
         self.Startview.grid(row=0, column=0, sticky="nsew")
         self.Userview.grid(row=0, column=0, sticky="nsew")
@@ -47,13 +49,15 @@ class FitnessTrackerApp(tki.Tk):
         self.Mealview.grid(row=0, column=0, sticky="nsew")
         self.Mealrecordview.grid(row=0, column=0, sticky="nsew")
         self.Weightview.grid(row=0, column=0, sticky="nsew")
-
+        self.Weightrecordview.grid(row=0, column=0, sticky="nsew")
+        
+    
         self.show_frame("sv")
+        
         # SQLite-Datenbankverbindung herstellen
         self.db = Database()
         self.db.create_tables()
-        print(vars(self.frames.get('sv')))
-
+        
         # funktionen mappen
         self.map_button_functions()
 
@@ -85,7 +89,10 @@ class FitnessTrackerApp(tki.Tk):
                                                    foreground="red")
 
             return
-
+         #eine Funktion, um zur Seite "Weightrecordview" zu wechseln
+        def show_weight_record_view():
+            self.show_frame("Weightrecordview")
+            
         # Gewichtsverlauf in die Datenbank einfügen
         cursor.execute("INSERT INTO user (name, age, weight, fl) VALUES (?,?,?,?)", (name, age, weight, fl))
 
@@ -252,9 +259,55 @@ class FitnessTrackerApp(tki.Tk):
 
     def record_weight(self):
         # Eingabewerte vom Benutzer abrufen
-        weight = self.Startview.weight_entry.get()
-        connection = self.db.get_connection()
-        cursor = connection.cursor()
+        entered_weight = self.Weightrecordview.weight_entry.get()
+        date = self.Weightrecordview.date_entry.get()
+
+        # Hier die Verarbeitung und Speicherung des Gewichts in der Datenbank implementieren
+        print("Entered Weight:", entered_weight)
+
+        # Beispiel: Füge das Gewicht zur weight_logs-Liste hinzu
+        self.controller.Weightview.weight_logs.append([entered_weight, date])
+
+        # Wechsele zurück zur Startseite
+        self.controller.show_frame("sv")
+
+        # Aktualisiere den Graphen in der Weightview-Klasse
+        self.controller.Weightview.update_graph()
+
+        # Clear weight entry field
+        self.Weightrecordview.weight_entry.delete(0, tki.END)
+
+        try:
+            # Überprüfen, ob die Eingabe eine positive Zahl ist
+            weight = float(entered_weight)
+            if weight <= 0:
+                raise ValueError("Das Gewicht muss eine positive Zahl sein.")
+            
+            # Aktuelles Datum und Uhrzeit abrufen
+            current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # Gewichtsverlauf in die Datenbank einfügen
+            cursor = self.db.get_connection().cursor()
+            cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (weight, current_date))
+
+            # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
+            self.Startview.message_Label.configure(text=f"Gewicht {weight} kg erfolgreich aufgezeichnet.",
+                                                   foreground="green")
+
+            # Eingabefelder leeren
+            self.Startview.weight_entry.delete(0, tki.END)
+
+            cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+            weight_logs = cursor.fetchall()
+
+            # Nach dem Aufzeichnen des Gewichts die Seite "Weightview" aufrufen
+            self.controller.show_frame("Weightview")
+
+        except ValueError:
+            self.Startview.message_Label.configure(text="Bitte geben Sie eine gültige Gewichtsangabe ein.",
+                                                   foreground="red")
+
+
 
         print(weight)
         # Überprüfen, ob die Eingabe eine positive Zahl ist
@@ -267,6 +320,7 @@ class FitnessTrackerApp(tki.Tk):
                                                    foreground="red")
 
             return
+    
 
         # Aktuelles Datum und Uhrzeit abrufen
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -284,8 +338,10 @@ class FitnessTrackerApp(tki.Tk):
         cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
         weight_logs = cursor.fetchall()
 
-        print(weight_logs)
-
+        # Nach dem Aufzeichnen des Gewichts die Seite "Weightview" aufrufen
+        self.controller.show_frame("Weightview")
+    
+    
     # Hier werden alle Funktionen allen Buttons aller Views zugeordnet
     def map_button_functions(self):
 
@@ -304,14 +360,13 @@ class FitnessTrackerApp(tki.Tk):
 
         # self.Startview.show_weight_button.configure(command=self.show_weight_logs)
         self.Startview.show_weight_button.configure(command=lambda: self.show_frame('wv'))
-        self.Startview.record_weight_button.configure(command=self.record_weight)
-
+        self.Startview.record_weight_button.configure(command=lambda: self.show_frame('wrv'))
+        
         # Mapping der Funktionen in allen anderen Views
-
         self.Userview.create_user_button.configure(command=self.record_user)
         self.Trainingrecordview.safe_workout_button.configure(command=self.record_workout)
         self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
-
+        self.Weightrecordview.record_weight_button.configure(command=self.record_weight)
 
 if __name__ == "__main__":
     app = FitnessTrackerApp()
