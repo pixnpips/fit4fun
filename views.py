@@ -61,7 +61,7 @@ class Startview(tk.Frame):
         print('Name: ' + str(name))
 
         if not name:
-            self.create_user_button.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+            self.create_user_button.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         else:
             self.create_user_button.grid_forget()
             self.name_label.configure(text=name , font=('Helvetica', 18, 'bold'))
@@ -74,19 +74,53 @@ class Startview(tk.Frame):
         # self.weight_label.grid(row=3, column=0, padx=10, pady=10)
         # self.weight_entry.grid(row=3, column=1, padx=10, pady=10)
 
+        self.cursor.execute("SELECT date, activity FROM workouts ORDER BY date DESC")
+        workouts = self.cursor.fetchall()
+        print('Workouts' + str(workouts))
+
+        if len(workouts) > 3:
+            objects = workouts[:3]
+            for index, object in enumerate(objects, start=0):
+                tk.Label(self, text=object[0]).grid(row=index + 5, column=0, padx=5, pady=5)
+                tk.Label(self, text=object[1]).grid(row=index + 5, column=1, padx=5, pady=5)
+        else:
+            for index, workout in enumerate(workouts, start=0):
+                tk.Label(self, text=workout[0]).grid(row=index+5, column=0, padx=5, pady=5)
+                tk.Label(self, text=workout[1]).grid(row=index+5, column=1, padx=5, pady=5)
+
         # Buttons zum Recorden platzieren
         self.record_weight_button.grid(row=3, column=0,padx=10, pady=10)
-        self.record_workout_button.grid(row=4, column=0, padx=10, pady=10)
-        self.record_meal_button.grid(row=5, column=0, padx=10, pady=10)
+        self.show_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
+
+        self.workout_label.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
+
+
+        self.record_workout_button.grid(row=5, column=0, padx=10, pady=10)
+        self.show_workout_button.grid(row=5, column=1, padx=10, pady=10)
+
+
+        self.meals_label.grid(row=10, column=0, columnspan=3, padx=10, pady=10)
+        self.record_meal_button.grid(row=11, column=0, padx=10, pady=10)
+        self.show_meal_button.grid(row=11, column=1, padx=10, pady=10)
+
+        self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
+        meals = self.cursor.fetchall()
+        print('Meals' + str(len(meals)))
+
+        if len(meals)>3:
+            objects = meals[:3]
+            for index, object in enumerate(objects, start=0):
+                tk.Label(self, text=object[0]).grid(row=index + 12, column=0, padx=5, pady=5)
+                tk.Label(self, text=object[1]).grid(row=index + 12, column=1, padx=5, pady=5)
+        else:
+            for index, meal in enumerate(meals, start=0):
+                tk.Label(self, text=meal[0]).grid(row=index + 12, column=0, padx=5, pady=5)
+                tk.Label(self, text=meal[1]).grid(row=index + 12, column=1, padx=5, pady=5)
+
 
         # Buttons zum Anzeigen von Daten platzieren
-        self.show_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
-        self.workout_label.grid(row=4, column=1, padx=10, pady=10)
-        self.show_workout_button.grid(row=5, column=1, padx=10, pady=10)
-        self.meals_label.grid(row=6, column=1, padx=10, pady=10)
-        self.show_meal_button.grid(row=7, column=1, padx=10, pady=10)
 
-        self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
+        self.message_Label.grid(row=20, column=0, columnspan=2, pady=10)
 
 
 class Userview(tk.Frame):
@@ -425,7 +459,7 @@ class Weightview(tk.Frame):
 
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=16, column=2, padx=10, pady=10)
+        canvas_widget.grid(row=16, column=0, columnspan=2, padx=10, pady=10)
 
         canvas.draw()
 
