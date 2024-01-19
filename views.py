@@ -34,20 +34,62 @@ class Startview(tk.Frame):
 
         # Buttons um Werte anzuzeigen
         self.record_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
-        self.workout_label = tk.Label(self, text="letzte Trainingsaktivitäten")
+        self.workout_label = tk.Label(self, text="Letzte Trainingsaktivitäten")
         self.show_workout_button = tk.Button(self, text="Alle Trainingsaktivitäten anzeigen")
-        self.meals_label = tk.Label(self, text="letzte Mahlzeiten")
+        self.meals_label = tk.Label(self, text="Letzte Mahlzeiten")
         self.show_meal_button = tk.Button(self, text="Alle Mahlzeiten anzeigen")
         self.show_weight_button = tk.Button(self, text="Gewichtsverlauf anzeigen")
 
         # Labels der Erstansicht
 
         self.name_label = tk.Label(self)
-
-        self.weight_label = tk.Label(self, text="Gewicht (kg):")
+        self.weight_label = tk.Label(self, text="Aktuelles Gewicht (kg):")
+        self.target_weight_label = tk.Label(self, text="Zielgewicht")
         self.message_Label = tk.Label(self, text="lalala")
-
         self.separator = ttk.Separator(self, orient='horizontal')
+
+        #Labels der Anzeige der letzten Daten
+
+        self.show_meals = []
+        self.show_meal_dates = []
+
+        self.show_weight_label = self.show_target_weight_label = tk.Label(self, text="")
+        self.show_target_weight_label = tk.Label(self, text="")
+
+        self.show_meal_label_1 = tk.Label(self, text="")
+        self.show_meal_date_label_1 = tk.Label(self, text="")
+
+        self.show_meal_label_2 = tk.Label(self, text="")
+        self.show_meal_date_label_2 = tk.Label(self, text="")
+
+        self.show_meal_label_3 = tk.Label(self, text="")
+        self.show_meal_date_label_3 = tk.Label(self, text="")
+
+        for i in self.show_meal_label_1, self.show_meal_label_2, self.show_meal_label_3:
+            self.show_meals.append(i)
+
+        for i in self.show_meal_date_label_1, self.show_meal_date_label_2, self.show_meal_date_label_3:
+            self.show_meal_dates.append(i)
+
+        self.show_workouts = []
+        self.show_workout_dates = []
+
+        self.show_workout_label_1 = tk.Label(self, text="")
+        self.show_workout_date_label_1 = tk.Label(self, text="")
+
+        self.show_workout_label_2 = tk.Label(self, text="")
+        self.show_workout_date_label_2 = tk.Label(self, text="")
+
+        self.show_workout_label_3 = tk.Label(self, text="")
+        self.show_workout_date_label_3 = tk.Label(self, text="")
+
+        for i in self.show_workout_label_1, self.show_workout_label_2, self.show_workout_label_3:
+            self.show_workouts.append(i)
+
+        for i in self.show_workout_date_label_1, self.show_workout_date_label_2, self.show_workout_date_label_3:
+            self.show_workout_dates.append(i)
+
+
 
     def show(self):
 
@@ -66,8 +108,14 @@ class Startview(tk.Frame):
 
 
         # Label für Gewichtsverlauf
-        # self.weight_label.grid(row=3, column=0, padx=10, pady=10)
-        # self.weight_entry.grid(row=3, column=1, padx=10, pady=10)
+        self.weight_label.grid(row=2, column=0, padx=10, pady=10)
+        self.target_weight_label.grid(row=2, column=2, padx=10, pady=10)
+
+        for i, m in enumerate(self.show_workouts, start=0):
+            m.grid(row=i + 6, column=1, padx=5, pady=5)
+
+        for i, m in enumerate(self.show_workout_dates, start=0) :
+            m.grid(row=i + 6, column=0, padx=5, pady=5)
 
         self.cursor.execute("SELECT date, activity FROM workouts ORDER BY date DESC")
         workouts = self.cursor.fetchall()
@@ -76,12 +124,13 @@ class Startview(tk.Frame):
         if len(workouts) > 3:
             objects = workouts[:3]
             for index, object in enumerate(objects, start=0):
-                tk.Label(self, text=object[0]).grid(row=index + 6, column=0, padx=5, pady=5)
-                tk.Label(self, text=object[1]).grid(row=index + 6, column=1, padx=5, pady=5)
+                self.show_workout_dates[index].configure(text=object[0])
+                self.show_workouts[index].configure(text=object[1])
+
         else:
             for index, workout in enumerate(workouts, start=0):
-                tk.Label(self, text=workout[0]).grid(row=index+6, column=0, padx=5, pady=5)
-                tk.Label(self, text=workout[1]).grid(row=index+6, column=1, padx=5, pady=5)
+                self.show_workout_dates[index].configure(text=workout[0])
+                self.show_workouts[index].configure(text=workout[1])
 
         # Buttons zum Recorden platzieren
         self.record_weight_button.grid(row=3, column=0,padx=10, pady=10)
@@ -98,6 +147,12 @@ class Startview(tk.Frame):
         self.record_meal_button.grid(row=11, column=0, padx=10, pady=10)
         self.show_meal_button.grid(row=11, column=1, padx=10, pady=10)
 
+        for i, m in enumerate(self.show_meals, start=0):
+            m.grid(row=i + 12, column=1, padx=5, pady=5)
+
+        for i, m in enumerate(self.show_meal_dates, start=0) :
+            m.grid(row=i + 12, column=0, padx=5, pady=5)
+
         self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
         meals = self.cursor.fetchall()
         print('Meals' + str(len(meals)))
@@ -105,15 +160,14 @@ class Startview(tk.Frame):
         if len(meals)>3:
             objects = meals[:3]
             for index, object in enumerate(objects, start=0):
-                tk.Label(self, text=object[0]).grid(row=index + 12, column=0, padx=5, pady=5)
-                tk.Label(self, text=object[1]).grid(row=index + 12, column=1, padx=5, pady=5)
+                self.show_meals[index].configure(text=object[1])
+                self.show_meal_dates[index].configure(text=object[0])
         else:
             for index, meal in enumerate(meals, start=0):
-                tk.Label(self, text=meal[0]).grid(row=index + 12, column=0, padx=5, pady=5)
-                tk.Label(self, text=meal[1]).grid(row=index + 12, column=1, padx=5, pady=5)
+                self.show_meals[index].configure(text = meal[1])
+                self.show_meal_dates[index].configure(text=meal[0])
 
-
-        # Buttons zum Anzeigen von Daten platzieren
+                # Buttons zum Anzeigen von Daten platzieren
 
         self.message_Label.grid(row=20, column=0, columnspan=2, pady=10)
 
@@ -271,6 +325,9 @@ class Trainingrecordview(tk.Frame):
         self.duration_entry.grid(row=3, column=2, padx=10, pady=10)
         self.safe_workout_button.grid(row=4, column=1, columnspan=2, padx=10, pady=10)
         self.message_Label.grid(row=5, column=0, columnspan=3, pady=10)
+        self.message_Label.configure(text="")
+        self.duration_entry.delete(0, 'end')
+        self.workout_entry.set('')
 
 
 class Mealview(tk.Frame):
