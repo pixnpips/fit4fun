@@ -280,11 +280,11 @@ class FitnessTrackerApp(tki.Tk):
         cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (weight, current_date))
 
         # Meldung anzeigen, dass das Gewicht erfolgreich aufgezeichnet wurde
-        self.Startview.message_Label.configure(text=f"Gewicht {weight} kg erfolgreich aufgezeichnet.",
+        self.Weightrecordview.message_Label.configure(text=f"Gewicht {weight} kg erfolgreich aufgezeichnet.",
                                                foreground="green")
 
         # Eingabefelder leeren
-        self.Startview.weight_entry.delete(0, tki.END)
+        self.Weightrecordview.weight_entry.delete(0, tki.END)
 
         cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
         weight_logs = cursor.fetchall()
@@ -316,6 +316,8 @@ class FitnessTrackerApp(tki.Tk):
         self.Userview.create_user_button.configure(command=self.record_user)
         self.Trainingrecordview.safe_workout_button.configure(command=self.record_workout)
         self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
+
+        self.Weightrecordview.safe_weight_button.configure(command=self.record_weight)
 
 
 if __name__ == "__main__":

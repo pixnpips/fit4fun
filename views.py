@@ -392,6 +392,7 @@ class Mealrecordview(tk.Frame):
 
         self.message_Label.grid(row=10, column=1, columnspan=2, pady=10)
         self.record_meal_button.grid(row=8, column=1, columnspan=2, padx=10, pady=10)
+        self.message_Label.configure(text="")
 
     def reset(self):
 
@@ -497,3 +498,4 @@ class Weightrecordview(tk.Frame):
         self.weight_entry.grid(row=2, column=2, padx=10, pady=10)
         self.safe_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
         self.message_Label.grid(row=4, column=0, columnspan=3, pady=10)
+        self.message_Label.configure(text="")
