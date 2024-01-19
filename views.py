@@ -22,7 +22,6 @@ class Startview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
-
         # self.weight_entry = tk.Entry(self)
 
         # Button um User zu erstellen
@@ -249,6 +248,10 @@ class Trainingview(tk.Frame):
 
 
     def show(self):
+
+        for i in self.grid_slaves():
+            i.grid_forget()
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
@@ -267,9 +270,9 @@ class Trainingview(tk.Frame):
             print('Workouts' + str(workouts))
 
         for index, workout in enumerate(workouts, start=1):
-            tk.Label(self, text=workout[0]).grid(row=index+5, column=0, padx=5, pady=5)
-            tk.Label(self, text=workout[1]).grid(row=index+5, column=1, padx=5, pady=5)
-            tk.Label(self, text=workout[2]).grid(row=index+5, column=2, padx=5, pady=5)
+            tk.Label(self, text=workout[0]).grid(row=index + 5, column=0, padx=5, pady=5)
+            tk.Label(self, text=workout[1]).grid(row=index + 5, column=1, padx=5, pady=5)
+            tk.Label(self, text=workout[2]).grid(row=index + 5, column=2, padx=5, pady=5)
 
 
 
@@ -362,6 +365,10 @@ class Mealview(tk.Frame):
 
         # Mahlzeiten im Frame anzeigen
         for index, meal in enumerate(meals, start=1):
+            tk.Label(self, text='').grid(row=index + 5, column=0, padx=5, pady=5)
+            tk.Label(self, text='').grid(row=index + 5, column=1, padx=5, pady=5)
+            tk.Label(self, text='').grid(row=index + 5, column=2, padx=5, pady=5)
+
             tk.Label(self, text=meal[0]).grid(row=index+5, column=0, padx=5, pady=5)
             tk.Label(self, text=meal[1]).grid(row=index+5, column=1, padx=5, pady=5)
             tk.Label(self, text=meal[2]).grid(row=index+5, column=2, padx=5, pady=5)
@@ -427,9 +434,14 @@ class Mealrecordview(tk.Frame):
     #     print(f"Ausgewählt: " + str(selected_item))
 
     def show(self):
+
+        for i in self.grid_slaves():
+            i.grid_forget()
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
+
         self.separator.grid(row=1, columnspan=4, sticky="ew")
 
         self.first_label.grid(row=2, column=1, padx=10, pady=10)
@@ -477,10 +489,10 @@ class Weightview(tk.Frame):
         self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
 
     def show(self):
-        # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        # neues_fenster = tk.Toplevel(self.controller.container)
-        # weight_logs_frame = tk.Frame(neues_fenster)
-        # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
+
+        for i in self.grid_slaves():
+            i.grid_forget()
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
