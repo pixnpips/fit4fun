@@ -88,7 +88,6 @@ class FitnessTrackerApp(tki.Tk):
         except ValueError:
             self.Startview.message_Label.configure(text="Bitte geben Sie eine gültige Gewichtsangabe ein.",
                                                    foreground="red")
-
             return
 
         # Gewichtsverlauf in die Datenbank einfügen
@@ -103,6 +102,8 @@ class FitnessTrackerApp(tki.Tk):
 
         cursor.execute("SELECT * FROM user")
         users = cursor.fetchall()
+
+        connection.commit()
 
         print(users)
 
@@ -182,6 +183,8 @@ class FitnessTrackerApp(tki.Tk):
 
         print(workouts)
 
+        connection.commit()
+
     def record_meal(self):
         # Eingabewerte vom Benutzer abrufen
         first = self.Mealrecordview.first_combo.get()
@@ -248,6 +251,7 @@ class FitnessTrackerApp(tki.Tk):
             text=f"Mahlzeit {first} {second} {drink} mit {calories} Kalorien erfolgreich aufgezeichnet.",
             foreground="green")
 
+        connection.commit()
         # self.calories_entry.delete(0, tki.END)
 
         # cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
@@ -288,6 +292,8 @@ class FitnessTrackerApp(tki.Tk):
 
         cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
         weight_logs = cursor.fetchall()
+
+        connection.commit()
 
         print(weight_logs)
 

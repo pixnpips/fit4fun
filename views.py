@@ -89,18 +89,18 @@ class Startview(tk.Frame):
             self.show_workout_dates.append(i)
 
 
-
     def show(self):
 
-        self.cursor.execute("SELECT name FROM user WHERE ID = 1 ")
-        name = self.cursor.fetchone()
-        print('Name: ' + str(name))
+        # self.cursor.execute("SELECT name FROM user WHERE ID = 0 ")
+        self.cursor.execute("SELECT name FROM user")
+        names = self.cursor.fetchall()
+        print('Alle User: ' + str(names))
 
-        if not name:
+        if len(names) == 0:
             self.create_user_button.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         else:
             self.create_user_button.grid_forget()
-            self.name_label.configure(text=name , font=('Helvetica', 18, 'bold'))
+            self.name_label.configure(text=names[0] , font=('Helvetica', 18, 'bold'))
             self.name_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
         self.separator.grid(row=1, columnspan=3, sticky="ew")
@@ -108,7 +108,15 @@ class Startview(tk.Frame):
 
         # Label für Gewichtsverlauf
         self.weight_label.grid(row=2, column=0, padx=10, pady=10)
-        self.target_weight_label.grid(row=2, column=2, padx=10, pady=10)
+        self.show_weight_label.grid(row=2, column=1, padx=10, pady=10)
+
+        self.cursor.execute("SELECT weight FROM weight_logs ORDER BY date DESC ")
+        weights = self.cursor.fetchall()
+        print('Alle Weights' + str(weights))
+        self.show_weight_label.configure(text=weights[0])
+
+
+        # self.target_weight_label.grid(row=2, column=2, padx=10, pady=10)
 
         for i, m in enumerate(self.show_workouts, start=0):
             m.grid(row=i + 6, column=1, padx=5, pady=5)
@@ -118,7 +126,7 @@ class Startview(tk.Frame):
 
         self.cursor.execute("SELECT date, activity FROM workouts ORDER BY date DESC")
         workouts = self.cursor.fetchall()
-        print('Workouts' + str(workouts))
+        print('Alle Workouts' + str(workouts))
 
         if len(workouts) > 3:
             objects = workouts[:3]
@@ -137,7 +145,6 @@ class Startview(tk.Frame):
 
         self.workout_label.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
 
-
         self.record_workout_button.grid(row=5, column=0, padx=10, pady=10)
         self.show_workout_button.grid(row=5, column=1, padx=10, pady=10)
 
@@ -154,7 +161,7 @@ class Startview(tk.Frame):
 
         self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
         meals = self.cursor.fetchall()
-        print('Meals' + str(len(meals)))
+        print('Alle Meals' + str(meals))
 
         if len(meals)>3:
             objects = meals[:3]
