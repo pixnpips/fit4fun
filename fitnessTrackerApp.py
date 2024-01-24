@@ -1,4 +1,5 @@
 import tkinter as tki
+
 from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview, Weightrecordview
 from tkinter import font as tkfont
 from datetime import datetime
@@ -27,7 +28,7 @@ class FitnessTrackerApp(tki.Tk):
         self.title_label.grid(row=0, column=1)
         self.placeholder.grid(row=0, column=2)
 
-        self.grid_rowconfigure(0, minsize=50)
+        self.grid_rowconfigure(0, minsize=60)
         self.grid_columnconfigure(0, weight=0, minsize=200)
         self.grid_columnconfigure(1, weight=10)
         self.grid_columnconfigure(2, weight=0, minsize=200)
@@ -92,6 +93,7 @@ class FitnessTrackerApp(tki.Tk):
             self.button.grid_forget()
         else:
             self.button.grid(row=0, column=0)
+
         frame.show()
         frame.tkraise()
 
