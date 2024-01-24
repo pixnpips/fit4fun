@@ -51,6 +51,10 @@ class Startview(tk.Frame):
 
     def show(self):
 
+        # 2 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
         self.cursor.execute("SELECT name FROM user WHERE ID = 1 ")
         name = self.cursor.fetchone()
         print('Name: ' + str(name))
@@ -150,6 +154,10 @@ class Userview(tk.Frame):
 
 
     def show(self):
+        # 2 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
@@ -195,6 +203,11 @@ class Trainingview(tk.Frame):
 
 
     def show(self):
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
@@ -261,6 +274,11 @@ class Trainingrecordview(tk.Frame):
         self.separator = ttk.Separator(self, orient='horizontal')
 
     def show(self):
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
@@ -287,6 +305,11 @@ class Mealview(tk.Frame):
         self.date_label = tk.Label(self, text="Datum")
 
     def show(self):
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         # Label für Mahlzeiten
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
@@ -370,6 +393,11 @@ class Mealrecordview(tk.Frame):
     #     print(f"Ausgewählt: " + str(selected_item))
 
     def show(self):
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
@@ -420,6 +448,11 @@ class Weightview(tk.Frame):
         self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
 
     def show(self):
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
         # neues_fenster = tk.Toplevel(self.controller.container)
         # weight_logs_frame = tk.Frame(neues_fenster)
@@ -489,6 +522,11 @@ class Weightrecordview(tk.Frame):
         self.separator = ttk.Separator(self, orient='horizontal')
 
     def show(self):
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")

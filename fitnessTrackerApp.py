@@ -18,9 +18,10 @@ class FitnessTrackerApp(tki.Tk):
 
         # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tki.Frame(self)
-        self.container.pack(side="top", anchor='center', fill="both", expand=True)
+        # self.container.pack(side="top", anchor='center', fill="both", expand=True)
+        self.container.grid(row=0, column=0, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
-        self.container.grid_columnconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1, minsize=1080)
 
         # Liste der Frames
         self.frames = {}
