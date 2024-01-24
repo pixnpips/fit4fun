@@ -9,6 +9,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk
 from user_meal_activity_weight import *
 from PIL import Image, ImageTk
+import matplotlib.dates as mdates
+
 
 
 
@@ -430,8 +432,8 @@ class Weightview(tk.Frame):
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         # Ein Label für die Spaltenüberschriften
-        tk.Label(self, text="Gewicht (kg)").grid(row=2, column=0, padx=5, pady=5)
-        tk.Label(self, text="Datum").grid(row=2, column=1, padx=5, pady=5)
+        tk.Label(self, text="Gewicht (kg)").grid(row=2, column=1, padx=5, pady=5)
+        tk.Label(self, text="Datum").grid(row=2, column=0, padx=5, pady=5)
 
         # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.db.get_connection() as conn:
@@ -441,10 +443,17 @@ class Weightview(tk.Frame):
             print('Gewichtsverlauf' + str(weight_logs))
 
         # Gewichtsverlauf im Frame anzeigen
-        for index, log in enumerate(weight_logs, start=1):
-            tk.Label(self, text=log[0]).grid(row=index+5, column=0, padx=5, pady=5)
-            tk.Label(self, text=log[1]).grid(row=index+5, column=1, padx=5, pady=5)
+        #for index, log in enumerate(weight_logs, start=1):
+           # tk.Label(self, text=log[0]).grid(row=index+2, column=1, padx=10, pady=10)
+            #tk.Label(self, text=log[1]).grid(row=index+2, column=0, padx=10, pady=10)
 
+        # Gewichtsverlauf im Frame anzeigen
+        weights_label = tk.Label(self, text="\n".join(str(log[0]) for log in weight_logs))
+        weights_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+
+        dates_label = tk.Label(self, text="\n".join(str(log[1]) for log in weight_logs))
+        dates_label.grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        
         # Zielgewichtslinie hinzufügen
         plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
 
@@ -458,13 +467,19 @@ class Weightview(tk.Frame):
         ax.set_xlabel('Datum')
         ax.set_ylabel('Gewicht (kg)')
         ax.legend()
+        
+        # Datumsansicht um 45 Grad drehen
+        plt.xticks(rotation=45, ha='right')
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
+
+        ax.autoscale()
+        ax.margins(x=0.1)  # Optional: Fügt etwas Platz links und rechts hinzu
 
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=100, column=0, columnspan=2, padx=10, pady=10)
+        canvas_widget.grid(row=3, column=2, padx=10, pady=10)
 
         canvas.draw()
-
 class Weightrecordview(tk.Frame):
 
     def callback(self, P):
@@ -494,8 +509,13 @@ class Weightrecordview(tk.Frame):
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
+        # Aktuelles Gewicht aktualisieren
+        #current_weight = get_current_weight()  # Funktion zum Abrufen des aktuellen Gewichts
+        #self.controller.frames["Weightview"].weight_label.config(text=f"Aktuelles Gewicht: {current_weight}")
+        
         self.weight_label.grid(row=2, column=1, padx=10, pady=10)
         self.weight_entry.grid(row=2, column=2, padx=10, pady=10)
         self.safe_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
         self.message_Label.grid(row=4, column=0, columnspan=3, pady=10)
         self.message_Label.configure(text="")
+        
