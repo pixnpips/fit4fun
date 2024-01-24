@@ -13,11 +13,12 @@ class FitnessTrackerApp(tki.Tk):
         # Titel und Schriftart
         self.title("Fit4Fun")
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-        self.resizable(False, False)
+        self.geometry('1080x720')
+        self.resizable(False, True)
 
         # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tki.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        self.container.pack(side="top", anchor='center', fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
 
@@ -318,6 +319,7 @@ class FitnessTrackerApp(tki.Tk):
         self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
 
         self.Weightrecordview.safe_weight_button.configure(command=self.record_weight)
+
 
 
 if __name__ == "__main__":
