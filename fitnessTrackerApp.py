@@ -1,25 +1,47 @@
-import tkinter as tki
+import tkinter as tk
+
 from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview, Weightrecordview
 from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
 from user_meal_activity_weight import *
+from tkinter import ttk
 
 
-class FitnessTrackerApp(tki.Tk):
+class FitnessTrackerApp(tk.Tk):
     def __init__(self, *args, **kwargs):
-        tki.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.__init__(self, *args, **kwargs)
 
         # Titel und Schriftart
         self.title("Fit4Fun")
-        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-        self.resizable(False, False)
+        # self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.geometry('1080x720')
+        self.resizable(False, True)
+
+        # Kopfleiste
+        self.button = tk.Button(self, text="←", command=lambda: self.show_frame("sv"))
+        # self.button.grid(row=0, column=0)
+        self.title_label = tk.Label(self, text="", font=('Helvetica', 18, 'bold'))
+        self.placeholder = tk.Label(self, text="")
+
+        self.button.grid(row=0, column=0)
+        self.title_label.grid(row=0, column=1)
+        self.placeholder.grid(row=0, column=2)
+
+        self.grid_rowconfigure(0, minsize=60)
+        self.grid_columnconfigure(0, weight=0, minsize=200)
+        self.grid_columnconfigure(1, weight=10)
+        self.grid_columnconfigure(2, weight=0, minsize=200)
+
+        self.separator = ttk.Separator(self, orient='horizontal')
+        self.separator.grid(row=1, column=0, columnspan=3, sticky="ew")
 
         # self.container wird erstellt, der alle Frames beinhaltet
-        self.container = tki.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        self.container = tk.Frame(self)
+        # self.container.pack(side="top", anchor='center', fill="both", expand=True)
+        self.container.grid(row=3, column=0, columnspan=3, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
-        self.container.grid_columnconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1, minsize=1080)
 
         # Liste der Frames
         self.frames = {}
@@ -44,14 +66,14 @@ class FitnessTrackerApp(tki.Tk):
         self.frames['wv'] = self.Weightview
         self.frames['wrv'] = self.Weightrecordview
 
-        self.Startview.grid(row=0, column=0, sticky="nsew")
-        self.Userview.grid(row=0, column=0, sticky="nsew")
-        self.Trainingview.grid(row=0, column=0, sticky="nsew")
-        self.Trainingrecordview.grid(row=0, column=0, sticky="nsew")
-        self.Mealview.grid(row=0, column=0, sticky="nsew")
-        self.Mealrecordview.grid(row=0, column=0, sticky="nsew")
-        self.Weightview.grid(row=0, column=0, sticky="nsew")
-        self.Weightrecordview.grid(row=0, column=0, sticky="nsew")
+        self.Startview.grid(row=3, column=0, sticky="nsew")
+        self.Userview.grid(row=3, column=0, sticky="nsew")
+        self.Trainingview.grid(row=3, column=0, sticky="nsew")
+        self.Trainingrecordview.grid(row=3, column=0, sticky="nsew")
+        self.Mealview.grid(row=3, column=0, sticky="nsew")
+        self.Mealrecordview.grid(row=3, column=0, sticky="nsew")
+        self.Weightview.grid(row=3, column=0, sticky="nsew")
+        self.Weightrecordview.grid(row=3, column=0, sticky="nsew")
 
         self.show_frame("sv")
         # SQLite-Datenbankverbindung herstellen
@@ -66,6 +88,12 @@ class FitnessTrackerApp(tki.Tk):
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
+        self.title_label.config(text= frame.title)
+        if page_name=='sv':
+            self.button.grid_forget()
+        else:
+            self.button.grid(row=0, column=0)
+
         frame.show()
         frame.tkraise()
 
@@ -175,7 +203,7 @@ class FitnessTrackerApp(tki.Tk):
             foreground="green")
 
         # Eingabefelder leeren
-        self.Trainingrecordview.workout_entry.delete(0, tki.END)
+        self.Trainingrecordview.workout_entry.delete(0, tk.END)
 
         cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
         workouts = cursor.fetchall()
@@ -284,7 +312,7 @@ class FitnessTrackerApp(tki.Tk):
                                                foreground="green")
 
         # Eingabefelder leeren
-        self.Weightrecordview.weight_entry.delete(0, tki.END)
+        self.Weightrecordview.weight_entry.delete(0, tk.END)
 
         cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
         weight_logs = cursor.fetchall()
@@ -318,6 +346,7 @@ class FitnessTrackerApp(tki.Tk):
         self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
 
         self.Weightrecordview.safe_weight_button.configure(command=self.record_weight)
+
 
 
 if __name__ == "__main__":

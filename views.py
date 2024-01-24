@@ -23,53 +23,70 @@ class Startview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
+        self.title = "Fit4Fun"
 
-
-        # self.weight_entry = tk.Entry(self)
-
-        # Button um User zu erstellen
+        # User weight area
         self.create_user_button = tk.Button(self, text="User erstellen", command=lambda: controller.show_frame("uv"))
-
-        # Buttons um Werte einzutragen und zu speichern
-        self.record_meal_button = tk.Button(self, text="Mahlzeit aufzeichnen")
         self.record_weight_button = tk.Button(self, text="Gewicht aufzeichnen")
-
-        # Buttons um Werte anzuzeigen
-        self.record_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
-        self.workout_label = tk.Label(self, text="letzte Trainingsaktivitäten")
-        self.show_workout_button = tk.Button(self, text="Alle Trainingsaktivitäten anzeigen")
-        self.meals_label = tk.Label(self, text="letzte Mahlzeiten")
-        self.show_meal_button = tk.Button(self, text="Alle Mahlzeiten anzeigen")
         self.show_weight_button = tk.Button(self, text="Gewichtsverlauf anzeigen")
+
+        # Mahlzeit Area
+        # self.workouts_area = tk.LabelFrame(self, text="", bd=1, width=500)
+        # self.meals_area = tk.LabelFrame(self, text="", bd=1, width=500)
+        self.record_meal_button = tk.Button(self, text="Mahlzeit aufzeichnen")
+
+        # Trainings Area
+        self.record_workout_button = tk.Button(self, text="Trainingsaktivität aufzeichnen")
+        self.workout_label = tk.Label(self, text="letzte Trainingsaktivitäten", font=('Helvetica', 14, 'bold'))
+        self.show_workout_button = tk.Button(self, text="Alle Trainingsaktivitäten anzeigen")
+        self.meals_label = tk.Label(self, text="letzte Mahlzeiten", font=('Helvetica', 14, 'bold'))
+        self.show_meal_button = tk.Button(self, text="Alle Mahlzeiten anzeigen")
 
         # Labels der Erstansicht
 
         self.name_label = tk.Label(self)
 
         self.weight_label = tk.Label(self, text="Gewicht (kg):")
-        self.message_Label = tk.Label(self, text="lalala")
+        self.message_Label = tk.Label(self, text="")
 
-        self.separator = ttk.Separator(self, orient='horizontal')
+        self.separator_hor = ttk.Separator(self, orient='horizontal')
+        self.separator_ver = ttk.Separator(self, orient='vertical')
 
     def show(self):
+
+        # 2 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=0)
+        self.grid_columnconfigure(3, weight=1)
+        self.grid_columnconfigure(4, weight=1)
 
         self.cursor.execute("SELECT name FROM user WHERE ID = 1 ")
         name = self.cursor.fetchone()
         print('Name: ' + str(name))
 
         if not name:
-            self.create_user_button.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+            self.create_user_button.grid(row=0, column=0, columnspan=5, padx=10, pady=20)
         else:
             self.create_user_button.grid_forget()
-            self.name_label.configure(text=name , font=('Helvetica', 18, 'bold'))
-            self.name_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+            self.name_label.configure(text=name, font=('Helvetica', 18, 'bold'))
+            self.name_label.grid(row=0, column=0, columnspan=5, padx=10, pady=20)
 
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
+        self.record_weight_button.grid(row=1, column=0, columnspan=2, padx=10, pady=20)
+        self.show_weight_button.grid(row=1, column=3, columnspan=2, padx=10, pady=20)
+
+        # self.separator.grid(row=1, columnspan=3, sticky="ew")
 
 
         # Label für Gewichtsverlauf
         # self.weight_label.grid(row=3, column=0, padx=10, pady=10)
         # self.weight_entry.grid(row=3, column=1, padx=10, pady=10)
+
+        # self.workouts_area.grid(row=4, column=0, columnspan=2, rowspan=4)
+
+        self.record_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=20)
+        self.show_workout_button.grid(row=5, column=0, columnspan=2, padx=10, pady=20)
+        self.workout_label.grid(row=6, column=0, columnspan=2, padx=10, pady=20)
 
         self.cursor.execute("SELECT date, activity FROM workouts ORDER BY date DESC")
         workouts = self.cursor.fetchall()
@@ -78,27 +95,22 @@ class Startview(tk.Frame):
         if len(workouts) > 3:
             objects = workouts[:3]
             for index, object in enumerate(objects, start=0):
-                tk.Label(self, text=object[0]).grid(row=index + 6, column=0, padx=5, pady=5)
-                tk.Label(self, text=object[1]).grid(row=index + 6, column=1, padx=5, pady=5)
+                tk.Label(self, text=object[0]).grid(row=index + 10, column=0, padx=5, pady=5)
+                tk.Label(self, text=object[1]).grid(row=index + 10, column=1, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
         else:
             for index, workout in enumerate(workouts, start=0):
-                tk.Label(self, text=workout[0]).grid(row=index+6, column=0, padx=5, pady=5)
-                tk.Label(self, text=workout[1]).grid(row=index+6, column=1, padx=5, pady=5)
+                tk.Label(self, text=workout[0]).grid(row=index+10, column=0, padx=5, pady=5)
+                tk.Label(self, text=workout[1]).grid(row=index+10, column=1, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
+
 
         # Buttons zum Recorden platzieren
-        self.record_weight_button.grid(row=3, column=0,padx=10, pady=10)
-        self.show_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
+        #self.meals_area.grid(row=4, column=2, columnspan=2, rowspan=4)
 
-        self.workout_label.grid(row=4, column=0, columnspan=3, padx=10, pady=10)
-
-
-        self.record_workout_button.grid(row=5, column=0, padx=10, pady=10)
-        self.show_workout_button.grid(row=5, column=1, padx=10, pady=10)
-
-
-        self.meals_label.grid(row=10, column=0, columnspan=3, padx=10, pady=10)
-        self.record_meal_button.grid(row=11, column=0, padx=10, pady=10)
-        self.show_meal_button.grid(row=11, column=1, padx=10, pady=10)
+        self.record_meal_button.grid(row=4, column=3, columnspan=2, padx=10, pady=20)
+        self.show_meal_button.grid(row=5, column=3, columnspan=2, padx=10, pady=20)
+        self.meals_label.grid(row=6, column=3, columnspan=2, padx=10, pady=20)
 
         self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
         meals = self.cursor.fetchall()
@@ -107,17 +119,22 @@ class Startview(tk.Frame):
         if len(meals)>3:
             objects = meals[:3]
             for index, object in enumerate(objects, start=0):
-                tk.Label(self, text=object[0]).grid(row=index + 12, column=0, padx=5, pady=5)
-                tk.Label(self, text=object[1]).grid(row=index + 12, column=1, padx=5, pady=5)
+                tk.Label(self, text=object[0]).grid(row=index + 12, column=3, padx=5, pady=5)
+                tk.Label(self, text=object[1]).grid(row=index + 12, column=4, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index+12, column=2, rowspan=2, sticky='ns')
         else:
             for index, meal in enumerate(meals, start=0):
-                tk.Label(self, text=meal[0]).grid(row=index + 12, column=0, padx=5, pady=5)
-                tk.Label(self, text=meal[1]).grid(row=index + 12, column=1, padx=5, pady=5)
+                tk.Label(self, text=meal[0]).grid(row=index + 12, column=3, padx=5, pady=5)
+                tk.Label(self, text=meal[1]).grid(row=index + 12, column=4, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
 
 
         # Buttons zum Anzeigen von Daten platzieren
 
-        self.message_Label.grid(row=20, column=0, columnspan=2, pady=10)
+        self.message_Label.grid(row=21, column=0, columnspan=5, pady=20)
+
+        self.separator_hor.grid(row=2, column=0, columnspan=5, sticky='ew')
+        self.separator_ver.grid(row=2, column=2, rowspan=10, sticky='ns')
 
 
 class Userview(tk.Frame):
@@ -131,8 +148,7 @@ class Userview(tk.Frame):
         self.controller = controller
 
         is_number = (self.register(self.callback))
-
-        self.title_label = tk.Label(self, text="User erstellen", font=('Helvetica', 18, 'bold'))
+        self.title = "User erstellen"
 
         self.name_entry = tk.Entry(self)
         self.age_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
@@ -146,16 +162,17 @@ class Userview(tk.Frame):
         self.fl_label = tk.Label(self, text="Fitnesslevel:")
         self.create_user_button = tk.Button(self, text="Speichern")
 
-        self.message_Label = tk.Label(self, text="lalala")
+        self.message_Label = tk.Label(self, text="")
 
         self.separator = ttk.Separator(self, orient='horizontal')
 
 
     def show(self):
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
+        # 2 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
+        # self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         self.name_label.grid(row=2, column=0, padx=10, pady=10)
         self.name_entry.grid(row=2, column=1, padx=10, pady=10)
@@ -173,7 +190,7 @@ class Userview(tk.Frame):
         self.fl_entry.grid(row=5, column=1, padx=10, pady=10)
 
         # Buttons zum Aufzeichnen von Daten
-        self.create_user_button.grid(row=11, column=1, columnspan=2, padx=10, pady=10)
+        self.create_user_button.grid(row=11, column=0, columnspan=2, padx=10, pady=10)
 
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
 
@@ -187,26 +204,29 @@ class Trainingview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
-        self.title_label = tk.Label(self, text="Trainingsaktivitäten", font=('Helvetica', 18, 'bold'))
-
-        self.activity_label = tk.Label(self, text="Aktivität")
-        self.date_label = tk.Label(self, text="Datum")
-        self.calories_label = tk.Label(self, text="Kalorien")
+        self.title = "Trainingsaktivitäten"
+        self.activity_label = tk.Label(self, text="Aktivität", font=('Helvetica', 14, 'bold'))
+        self.date_label = tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold'))
+        self.calories_label = tk.Label(self, text="Kalorien", font=('Helvetica', 14, 'bold'))
 
         self.separator = ttk.Separator(self, orient='horizontal')
 
 
     def show(self):
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
+
+        self.grid_rowconfigure(0, minsize=40)
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
 
         # Ein Label für die Spaltenüberschriften
-        self.activity_label.grid(row=2, column=0, padx=5, pady=5)
-        self.calories_label.grid(row=2, column=1, padx=5, pady=5)
-        self.date_label.grid(row=2, column=2, padx=5, pady=5)
+        self.activity_label.grid(row=0, column=0, padx=5, pady=5)
+        self.calories_label.grid(row=0, column=1, padx=5, pady=5)
+        self.date_label.grid(row=0, column=2, padx=5, pady=5)
 
         with self.controller.db.get_connection() as conn:
             cursor = conn.cursor()
@@ -253,7 +273,7 @@ class Trainingrecordview(tk.Frame):
 
         is_number = (self.register(self.callback))
 
-        self.title_label = tk.Label(self, text="Training speichern", font=('Helvetica', 18, 'bold'))
+        self.title="Training speichern"
         self.training_label = tk.Label(self, text="Trainingsaktivität:")
         self.workout_entry = ttk.Combobox(self, state="readonly", values=OPTIONS)
         self.duration_label = tk.Label(self, text="Minuten:")
@@ -263,16 +283,17 @@ class Trainingrecordview(tk.Frame):
         self.separator = ttk.Separator(self, orient='horizontal')
 
     def show(self):
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
-        self.training_label.grid(row=2, column=1, padx=10, pady=10)
-        self.workout_entry.grid(row=2, column=2, padx=10, pady=10)
-        self.duration_label.grid(row=3, column=1, padx=10, pady=10)
-        self.duration_entry.grid(row=3, column=2, padx=10, pady=10)
-        self.safe_workout_button.grid(row=4, column=1, columnspan=2, padx=10, pady=10)
-        self.message_Label.grid(row=5, column=0, columnspan=3, pady=10)
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
+        self.separator.grid(row=1, columnspan=2, sticky="ew")
+        self.training_label.grid(row=2, column=0, padx=10, pady=10)
+        self.workout_entry.grid(row=2, column=1, padx=10, pady=10)
+        self.duration_label.grid(row=3, column=0, padx=10, pady=10)
+        self.duration_entry.grid(row=3, column=1, padx=10, pady=10)
+        self.safe_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.message_Label.grid(row=5, column=0, columnspan=2, pady=10)
 
 
 class Mealview(tk.Frame):
@@ -280,24 +301,28 @@ class Mealview(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        self.title_label = tk.Label(self, text="Mahlzeiten", font=('Helvetica', 18, 'bold'))
+        self.title = "Mahlzeiten"
         self.separator = ttk.Separator(self, orient='horizontal')
 
         # Ein Label für die Spaltenüberschriften
-        self.meal_label = tk.Label( self, text="Mahlzeit")
-        self.calory_label = tk.Label(self,text="Kalorien")
-        self.date_label = tk.Label(self, text="Datum")
+        self.meal_label = tk.Label( self, text="Mahlzeit", font=('Helvetica', 14, 'bold'))
+        self.calory_label = tk.Label(self,text="Kalorien", font=('Helvetica', 14, 'bold'))
+        self.date_label = tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold'))
 
     def show(self):
-        # Label für Mahlzeiten
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
+        self.grid_rowconfigure(0, minsize=40)
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
-        self.meal_label.grid(row=2, column=0, padx=5, pady=5)
-        self.calory_label.grid(row=2, column=1, padx=5, pady=5)
-        self.date_label.grid(row=2, column=2, padx=5, pady=5)
+        # Label für Mahlzeiten
+
+        self.meal_label.grid(row=0, column=0, padx=5, pady=5)
+        self.calory_label.grid(row=0, column=1, padx=5, pady=5)
+        self.date_label.grid(row=0, column=2, padx=5, pady=5)
 
         with self.controller.db.get_connection() as conn:
             cursor = conn.cursor()
@@ -323,10 +348,9 @@ class Mealrecordview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
+        self.title = "Mahlzeit speichern"
 
         is_number = (self.register(self.callback))
-
-        self.title_label = tk.Label(self, text="Mahlzeit speichern", font=('Helvetica', 18, 'bold'))
         self.separator = ttk.Separator(self, orient='horizontal')
 
         self.first_label = tk.Label(self, text="Hauptgericht:")
@@ -364,7 +388,7 @@ class Mealrecordview(tk.Frame):
         self.drink_x_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
         self.drink_x_entry.insert(0, '0')
 
-        self.message_Label = tk.Label(self, text="lalala")
+        self.message_Label = tk.Label(self, text="")
         self.record_meal_button = tk.Button(self, text="Speichern")
 
     # def on_select(self, combo):
@@ -372,29 +396,28 @@ class Mealrecordview(tk.Frame):
     #     print(f"Ausgewählt: " + str(selected_item))
 
     def show(self):
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
-        self.separator.grid(row=1, columnspan=4, sticky="ew")
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
 
-        self.first_label.grid(row=2, column=1, padx=10, pady=10)
-        self.first_combo.grid(row=2, column=2, padx=10, pady=10)
-        self.first_x_label.grid(row=3, column=1, padx=10, pady=10)
-        self.first_x_entry.grid(row=3, column=2, padx=10, pady=10)
+        # self.separator.grid(row=1, columnspan=4, sticky="ew")
 
-        self.second_label.grid(row=4, column=1, padx=10, pady=10)
-        self.second_combo.grid(row=4, column=2, padx=10, pady=10)
-        self.second_x_label.grid(row=5, column=1, padx=10, pady=10)
-        self.second_x_entry.grid(row=5, column=2, padx=10, pady=10)
+        self.first_label.grid(row=2, column=0, padx=10, pady=10)
+        self.first_combo.grid(row=2, column=1, padx=10, pady=10)
+        self.first_x_label.grid(row=3, column=0, padx=10, pady=10)
+        self.first_x_entry.grid(row=3, column=1, padx=10, pady=10)
 
-        self.drink_label.grid(row=6, column=1, padx=10, pady=10)
-        self.drink_combo.grid(row=6, column=2, padx=10, pady=10)
-        self.drink_x_label.grid(row=7, column=1, padx=10, pady=10)
-        self.drink_x_entry.grid(row=7, column=2, padx=10, pady=10)
+        self.second_label.grid(row=4, column=0, padx=10, pady=10)
+        self.second_combo.grid(row=4, column=1, padx=10, pady=10)
+        self.second_x_label.grid(row=5, column=0, padx=10, pady=10)
+        self.second_x_entry.grid(row=5, column=1, padx=10, pady=10)
 
-        self.message_Label.grid(row=10, column=1, columnspan=2, pady=10)
-        self.record_meal_button.grid(row=8, column=1, columnspan=2, padx=10, pady=10)
-        self.message_Label.configure(text="")
+        self.drink_label.grid(row=6, column=0, padx=10, pady=10)
+        self.drink_combo.grid(row=6, column=1, padx=10, pady=10)
+        self.drink_x_label.grid(row=7, column=0, padx=10, pady=10)
+        self.drink_x_entry.grid(row=7, column=1, padx=10, pady=10)
+
+        self.record_meal_button.grid(row=8, column=0, columnspan=2, padx=10, pady=10)
+        self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
 
     def reset(self):
 
@@ -415,25 +438,29 @@ class Mealrecordview(tk.Frame):
 class Weightview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.title_label = tk.Label(self, text="Gewichtsverlauf", font=('Helvetica', 18, 'bold'))
+        self.title = "Gewichtsverlauf"
         self.separator = ttk.Separator(self, orient='horizontal')
 
         self.controller = controller
         self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
 
     def show(self):
+        self.grid_rowconfigure(0, minsize=40)
+
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=2)
+
+        self.separator.grid(row=1, column=0, columnspan=2, sticky="ew")
+
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
         # neues_fenster = tk.Toplevel(self.controller.container)
         # weight_logs_frame = tk.Frame(neues_fenster)
         # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         # Ein Label für die Spaltenüberschriften
-        tk.Label(self, text="Gewicht (kg)").grid(row=2, column=1, padx=5, pady=5)
-        tk.Label(self, text="Datum").grid(row=2, column=0, padx=5, pady=5)
+        tk.Label(self, text="Gewicht (kg)", font=('Helvetica', 14, 'bold')).grid(row=0, column=0, padx=5, pady=5)
+        tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold')).grid(row=0, column=1, padx=5, pady=5)
 
         # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.db.get_connection() as conn:
@@ -453,7 +480,7 @@ class Weightview(tk.Frame):
 
         dates_label = tk.Label(self, text="\n".join(str(log[1]) for log in weight_logs))
         dates_label.grid(row=3, column=0, padx=5, pady=5, sticky="e")
-        
+
         # Zielgewichtslinie hinzufügen
         plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
 
@@ -467,7 +494,7 @@ class Weightview(tk.Frame):
         ax.set_xlabel('Datum')
         ax.set_ylabel('Gewicht (kg)')
         ax.legend()
-        
+
         # Datumsansicht um 45 Grad drehen
         plt.xticks(rotation=45, ha='right')
         ax.xaxis.set_major_locator(mdates.MonthLocator())
@@ -477,9 +504,10 @@ class Weightview(tk.Frame):
 
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=3, column=2, padx=10, pady=10)
+        canvas_widget.grid(row=0, column=3, rowspan=100, padx=10, pady=10)
 
         canvas.draw()
+
 class Weightrecordview(tk.Frame):
 
     def callback(self, P):
@@ -494,9 +522,10 @@ class Weightrecordview(tk.Frame):
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
 
+        self.title = "Gewicht speichern"
+
         is_number = (self.register(self.callback))
 
-        self.title_label = tk.Label(self, text="Gewicht speichern", font=('Helvetica', 18, 'bold'))
         self.weight_label = tk.Label(self, text="Gewicht in kg:")
         self.weight_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
         self.message_Label = tk.Label(self, text="")
@@ -504,18 +533,19 @@ class Weightrecordview(tk.Frame):
         self.separator = ttk.Separator(self, orient='horizontal')
 
     def show(self):
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
-        button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
-        self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
+        # 3 columns, gleiche Breite
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         # Aktuelles Gewicht aktualisieren
         #current_weight = get_current_weight()  # Funktion zum Abrufen des aktuellen Gewichts
         #self.controller.frames["Weightview"].weight_label.config(text=f"Aktuelles Gewicht: {current_weight}")
-        
+
         self.weight_label.grid(row=2, column=1, padx=10, pady=10)
         self.weight_entry.grid(row=2, column=2, padx=10, pady=10)
         self.safe_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
         self.message_Label.grid(row=4, column=0, columnspan=3, pady=10)
         self.message_Label.configure(text="")
-        
