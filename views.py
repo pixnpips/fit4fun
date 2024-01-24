@@ -459,8 +459,8 @@ class Weightview(tk.Frame):
         # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
 
         # Ein Label für die Spaltenüberschriften
-        tk.Label(self, text="Gewicht (kg)", font=('Helvetica', 14, 'bold')).grid(row=0, column=0, padx=5, pady=5)
-        tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold')).grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(self, text="Gewicht (kg)", font=('Helvetica', 14, 'bold')).grid(row=0, column=1, padx=5, pady=5)
+        tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold')).grid(row=0, column=0, padx=5, pady=5)
 
         # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.db.get_connection() as conn:
@@ -504,7 +504,7 @@ class Weightview(tk.Frame):
 
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=0, column=3, rowspan=100, padx=10, pady=10)
+        canvas_widget.grid(row=0, column=3, rowspan=10, padx=10, pady=10, sticky='n')
 
         canvas.draw()
 
