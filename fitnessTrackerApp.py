@@ -1,4 +1,4 @@
-import tkinter as tki
+import tkinter as tk
 
 from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview, Weightrecordview
 from tkinter import font as tkfont
@@ -8,9 +8,9 @@ from user_meal_activity_weight import *
 from tkinter import ttk
 
 
-class FitnessTrackerApp(tki.Tk):
+class FitnessTrackerApp(tk.Tk):
     def __init__(self, *args, **kwargs):
-        tki.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.__init__(self, *args, **kwargs)
 
         # Titel und Schriftart
         self.title("Fit4Fun")
@@ -19,10 +19,10 @@ class FitnessTrackerApp(tki.Tk):
         self.resizable(False, True)
 
         # Kopfleiste
-        self.button = tki.Button(self, text="←", command=lambda: self.show_frame("sv"))
+        self.button = tk.Button(self, text="←", command=lambda: self.show_frame("sv"))
         # self.button.grid(row=0, column=0)
-        self.title_label = tki.Label(self, text="", font=('Helvetica', 18, 'bold'))
-        self.placeholder = tki.Label(self, text="")
+        self.title_label = tk.Label(self, text="", font=('Helvetica', 18, 'bold'))
+        self.placeholder = tk.Label(self, text="")
 
         self.button.grid(row=0, column=0)
         self.title_label.grid(row=0, column=1)
@@ -37,7 +37,7 @@ class FitnessTrackerApp(tki.Tk):
         self.separator.grid(row=1, column=0, columnspan=3, sticky="ew")
 
         # self.container wird erstellt, der alle Frames beinhaltet
-        self.container = tki.Frame(self)
+        self.container = tk.Frame(self)
         # self.container.pack(side="top", anchor='center', fill="both", expand=True)
         self.container.grid(row=3, column=0, columnspan=3, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
@@ -203,7 +203,7 @@ class FitnessTrackerApp(tki.Tk):
             foreground="green")
 
         # Eingabefelder leeren
-        self.Trainingrecordview.workout_entry.delete(0, tki.END)
+        self.Trainingrecordview.workout_entry.delete(0, tk.END)
 
         cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
         workouts = cursor.fetchall()
@@ -312,7 +312,7 @@ class FitnessTrackerApp(tki.Tk):
                                                foreground="green")
 
         # Eingabefelder leeren
-        self.Weightrecordview.weight_entry.delete(0, tki.END)
+        self.Weightrecordview.weight_entry.delete(0, tk.END)
 
         cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
         weight_logs = cursor.fetchall()
