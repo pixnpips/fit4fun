@@ -4,6 +4,7 @@ from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
 from user_meal_activity_weight import *
+from tkinter import ttk
 
 
 class FitnessTrackerApp(tki.Tk):
@@ -12,14 +13,21 @@ class FitnessTrackerApp(tki.Tk):
 
         # Titel und Schriftart
         self.title("Fit4Fun")
-        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        # self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.title_label = tki.Label(self, text="User erstellen", font=('Helvetica', 18, 'bold'))
         self.geometry('1080x720')
         self.resizable(False, True)
+
+        self.title_label.grid(row=0, column=0)
+        self.grid_rowconfigure(0, minsize=50)
+
+        self.separator = ttk.Separator(self, orient='horizontal')
+        self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tki.Frame(self)
         # self.container.pack(side="top", anchor='center', fill="both", expand=True)
-        self.container.grid(row=0, column=0, sticky="nsew")
+        self.container.grid(row=3, column=0, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1, minsize=1080)
 
@@ -46,14 +54,14 @@ class FitnessTrackerApp(tki.Tk):
         self.frames['wv'] = self.Weightview
         self.frames['wrv'] = self.Weightrecordview
 
-        self.Startview.grid(row=0, column=0, sticky="nsew")
-        self.Userview.grid(row=0, column=0, sticky="nsew")
-        self.Trainingview.grid(row=0, column=0, sticky="nsew")
-        self.Trainingrecordview.grid(row=0, column=0, sticky="nsew")
-        self.Mealview.grid(row=0, column=0, sticky="nsew")
-        self.Mealrecordview.grid(row=0, column=0, sticky="nsew")
-        self.Weightview.grid(row=0, column=0, sticky="nsew")
-        self.Weightrecordview.grid(row=0, column=0, sticky="nsew")
+        self.Startview.grid(row=3, column=0, sticky="nsew")
+        self.Userview.grid(row=3, column=0, sticky="nsew")
+        self.Trainingview.grid(row=3, column=0, sticky="nsew")
+        self.Trainingrecordview.grid(row=3, column=0, sticky="nsew")
+        self.Mealview.grid(row=3, column=0, sticky="nsew")
+        self.Mealrecordview.grid(row=3, column=0, sticky="nsew")
+        self.Weightview.grid(row=3, column=0, sticky="nsew")
+        self.Weightrecordview.grid(row=3, column=0, sticky="nsew")
 
         self.show_frame("sv")
         # SQLite-Datenbankverbindung herstellen
@@ -68,6 +76,7 @@ class FitnessTrackerApp(tki.Tk):
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
+        self.title_label.config(text= frame.title)
         frame.show()
         frame.tkraise()
 

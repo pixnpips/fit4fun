@@ -21,6 +21,7 @@ class Startview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
+        self.title = "Startview"
 
 
         # self.weight_entry = tk.Entry(self)
@@ -121,6 +122,9 @@ class Startview(tk.Frame):
 
         self.message_Label.grid(row=20, column=0, columnspan=2, pady=10)
 
+    def getTitle(self):
+        return self.title
+
 
 class Userview(tk.Frame):
     def callback(self, P):
@@ -133,6 +137,7 @@ class Userview(tk.Frame):
         self.controller = controller
 
         is_number = (self.register(self.callback))
+        self.title = "User erstellen"
 
         self.title_label = tk.Label(self, text="User erstellen", font=('Helvetica', 18, 'bold'))
 
@@ -158,7 +163,7 @@ class Userview(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-        button = tk.Button(self, text="←", command=lambda: self.controller.show_frame("sv"))
+        button = tk.Button(self, text="Home", command=lambda: self.controller.show_frame("sv"))
         button.grid(row=0, column=0, columnspan=1, padx=10, pady=10)
         self.title_label.grid(row=0, column=1, columnspan=2, padx=10, pady=10, sticky="w")
         self.separator.grid(row=1, columnspan=3, sticky="ew")
@@ -192,6 +197,8 @@ class Trainingview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
+
+        self.title = "Trainingsaktivitäten"
 
         self.title_label = tk.Label(self, text="Trainingsaktivitäten", font=('Helvetica', 18, 'bold'))
 
@@ -264,6 +271,8 @@ class Trainingrecordview(tk.Frame):
 
         is_number = (self.register(self.callback))
 
+        self.title="Training speichern"
+
         self.title_label = tk.Label(self, text="Training speichern", font=('Helvetica', 18, 'bold'))
         self.training_label = tk.Label(self, text="Trainingsaktivität:")
         self.workout_entry = ttk.Combobox(self, state="readonly", values=OPTIONS)
@@ -295,6 +304,7 @@ class Mealview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.title = "Mahlzeiten"
 
         self.title_label = tk.Label(self, text="Mahlzeiten", font=('Helvetica', 18, 'bold'))
         self.separator = ttk.Separator(self, orient='horizontal')
@@ -344,6 +354,7 @@ class Mealrecordview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
+        self.title = "Mahlzeit speichern"
 
         is_number = (self.register(self.callback))
 
@@ -441,6 +452,7 @@ class Mealrecordview(tk.Frame):
 class Weightview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        self.title = "Gewichtsverlauf"
         self.title_label = tk.Label(self, text="Gewichtsverlauf", font=('Helvetica', 18, 'bold'))
         self.separator = ttk.Separator(self, orient='horizontal')
 
@@ -511,6 +523,8 @@ class Weightrecordview(tk.Frame):
         self.db = Database()
         self.connection = self.db.get_connection()
         self.cursor = self.connection.cursor()
+
+        self.title = "Gewicht speichern"
 
         is_number = (self.register(self.callback))
 
