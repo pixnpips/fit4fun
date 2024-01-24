@@ -14,20 +14,31 @@ class FitnessTrackerApp(tki.Tk):
         # Titel und Schriftart
         self.title("Fit4Fun")
         # self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-        self.title_label = tki.Label(self, text="User erstellen", font=('Helvetica', 18, 'bold'))
         self.geometry('1080x720')
         self.resizable(False, True)
 
-        self.title_label.grid(row=0, column=0)
+        # Kopfleiste
+        self.button = tki.Button(self, text="←", command=lambda: self.show_frame("sv"))
+        self.button.grid(row=0, column=0)
+        self.title_label = tki.Label(self, text="", font=('Helvetica', 18, 'bold'))
+        self.placeholder = tki.Label(self, text="")
+
+        self.button.grid(row=0, column=0)
+        self.title_label.grid(row=0, column=1)
+        self.placeholder.grid(row=0, column=2)
+
         self.grid_rowconfigure(0, minsize=50)
+        self.grid_columnconfigure(0, weight=0, minsize=200)
+        self.grid_columnconfigure(1, weight=10)
+        self.grid_columnconfigure(2, weight=0, minsize=200)
 
         self.separator = ttk.Separator(self, orient='horizontal')
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
+        self.separator.grid(row=1, column=0, columnspan=3, sticky="ew")
 
         # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tki.Frame(self)
         # self.container.pack(side="top", anchor='center', fill="both", expand=True)
-        self.container.grid(row=3, column=0, sticky="nsew")
+        self.container.grid(row=3, column=0, columnspan=3, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1, minsize=1080)
 
