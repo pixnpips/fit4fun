@@ -46,7 +46,7 @@ class Startview(tk.Frame):
         self.name_label = tk.Label(self)
 
         self.weight_label = tk.Label(self, text="Gewicht (kg):")
-        self.message_Label = tk.Label(self, text="lalala")
+        self.message_Label = tk.Label(self, text="")
 
         self.separator = ttk.Separator(self, orient='horizontal')
 
@@ -272,15 +272,14 @@ class Trainingrecordview(tk.Frame):
         # 3 columns, gleiche Breite
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
 
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
-        self.training_label.grid(row=2, column=1, padx=10, pady=10)
-        self.workout_entry.grid(row=2, column=2, padx=10, pady=10)
-        self.duration_label.grid(row=3, column=1, padx=10, pady=10)
-        self.duration_entry.grid(row=3, column=2, padx=10, pady=10)
-        self.safe_workout_button.grid(row=4, column=1, columnspan=2, padx=10, pady=10)
-        self.message_Label.grid(row=5, column=0, columnspan=3, pady=10)
+        self.separator.grid(row=1, columnspan=2, sticky="ew")
+        self.training_label.grid(row=2, column=0, padx=10, pady=10)
+        self.workout_entry.grid(row=2, column=1, padx=10, pady=10)
+        self.duration_label.grid(row=3, column=0, padx=10, pady=10)
+        self.duration_entry.grid(row=3, column=1, padx=10, pady=10)
+        self.safe_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.message_Label.grid(row=5, column=0, columnspan=2, pady=10)
 
 
 class Mealview(tk.Frame):
@@ -375,7 +374,7 @@ class Mealrecordview(tk.Frame):
         self.drink_x_entry = tk.Entry(self, validate='all', validatecommand=(is_number, '%P'))
         self.drink_x_entry.insert(0, '0')
 
-        self.message_Label = tk.Label(self, text="lalala")
+        self.message_Label = tk.Label(self, text="")
         self.record_meal_button = tk.Button(self, text="Speichern")
 
     # def on_select(self, combo):
@@ -383,31 +382,28 @@ class Mealrecordview(tk.Frame):
     #     print(f"Ausgewählt: " + str(selected_item))
 
     def show(self):
-        # 3 columns, gleiche Breite
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
 
         # self.separator.grid(row=1, columnspan=4, sticky="ew")
 
-        self.first_label.grid(row=2, column=1, padx=10, pady=10)
-        self.first_combo.grid(row=2, column=2, padx=10, pady=10)
-        self.first_x_label.grid(row=3, column=1, padx=10, pady=10)
-        self.first_x_entry.grid(row=3, column=2, padx=10, pady=10)
+        self.first_label.grid(row=2, column=0, padx=10, pady=10)
+        self.first_combo.grid(row=2, column=1, padx=10, pady=10)
+        self.first_x_label.grid(row=3, column=0, padx=10, pady=10)
+        self.first_x_entry.grid(row=3, column=1, padx=10, pady=10)
 
-        self.second_label.grid(row=4, column=1, padx=10, pady=10)
-        self.second_combo.grid(row=4, column=2, padx=10, pady=10)
-        self.second_x_label.grid(row=5, column=1, padx=10, pady=10)
-        self.second_x_entry.grid(row=5, column=2, padx=10, pady=10)
+        self.second_label.grid(row=4, column=0, padx=10, pady=10)
+        self.second_combo.grid(row=4, column=1, padx=10, pady=10)
+        self.second_x_label.grid(row=5, column=0, padx=10, pady=10)
+        self.second_x_entry.grid(row=5, column=1, padx=10, pady=10)
 
-        self.drink_label.grid(row=6, column=1, padx=10, pady=10)
-        self.drink_combo.grid(row=6, column=2, padx=10, pady=10)
-        self.drink_x_label.grid(row=7, column=1, padx=10, pady=10)
-        self.drink_x_entry.grid(row=7, column=2, padx=10, pady=10)
+        self.drink_label.grid(row=6, column=0, padx=10, pady=10)
+        self.drink_combo.grid(row=6, column=1, padx=10, pady=10)
+        self.drink_x_label.grid(row=7, column=0, padx=10, pady=10)
+        self.drink_x_entry.grid(row=7, column=1, padx=10, pady=10)
 
-        self.message_Label.grid(row=10, column=1, columnspan=2, pady=10)
-        self.record_meal_button.grid(row=8, column=1, columnspan=2, padx=10, pady=10)
-        self.message_Label.configure(text="")
+        self.record_meal_button.grid(row=8, column=0, columnspan=2, padx=10, pady=10)
+        self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
 
     def reset(self):
 
@@ -439,9 +435,9 @@ class Weightview(tk.Frame):
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(2, weight=2)
 
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
+        self.separator.grid(row=1, column=0, columnspan=2, sticky="ew")
 
         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
         # neues_fenster = tk.Toplevel(self.controller.container)
@@ -480,7 +476,7 @@ class Weightview(tk.Frame):
 
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=100, column=0, columnspan=2, padx=10, pady=10)
+        canvas_widget.grid(row=0, column=3, rowspan=100, padx=10, pady=10)
 
         canvas.draw()
 
