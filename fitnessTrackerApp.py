@@ -19,7 +19,7 @@ class FitnessTrackerApp(tki.Tk):
 
         # Kopfleiste
         self.button = tki.Button(self, text="←", command=lambda: self.show_frame("sv"))
-        self.button.grid(row=0, column=0)
+        # self.button.grid(row=0, column=0)
         self.title_label = tki.Label(self, text="", font=('Helvetica', 18, 'bold'))
         self.placeholder = tki.Label(self, text="")
 
@@ -88,6 +88,10 @@ class FitnessTrackerApp(tki.Tk):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
         self.title_label.config(text= frame.title)
+        if page_name=='sv':
+            self.button.grid_forget()
+        else:
+            self.button.grid(row=0, column=0)
         frame.show()
         frame.tkraise()
 
