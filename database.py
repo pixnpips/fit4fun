@@ -46,14 +46,14 @@ class Database:
             ''')
 
         cursor.execute('''
-                            CREATE TABLE IF NOT EXISTS user (
-                                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                name TEXT,
-                                age INT,
-                                weight INT,
-                                fl text
-                            )
-                        ''')
+                 CREATE TABLE IF NOT EXISTS user (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT,
+                    age INT,
+                    weight INT,
+                    fl text
+                )
+            ''')
 
         # (Weitere Tabellen hier)
 
