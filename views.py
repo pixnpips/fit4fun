@@ -5,6 +5,7 @@ from tkinter import messagebox, ttk
 import sqlite3
 from datetime import datetime
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk
 from user_meal_activity_weight import *
