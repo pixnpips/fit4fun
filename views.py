@@ -11,6 +11,7 @@ from tkinter import ttk
 from user_meal_activity_weight import *
 from PIL import Image, ImageTk
 from ttkthemes import ThemedStyle
+from tkinter.scrolledtext import ScrolledText
 
 
 
@@ -267,6 +268,52 @@ class Userview(tk.Frame):
 
 
 
+# class Trainingview(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#         self.controller = controller
+#         self.db = Database()
+#         self.connection = self.db.get_connection()
+#         self.cursor = self.connection.cursor()
+#
+#         self.title = "Trainingsaktivitäten"
+#         self.activity_label = tk.Label(self, text="Aktivität", font=('Helvetica', 14, 'bold'))
+#         self.date_label = tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold'))
+#         self.calories_label = tk.Label(self, text="Kalorien", font=('Helvetica', 14, 'bold'))
+#
+#         self.separator = ttk.Separator(self, orient='horizontal')
+#
+#
+#     def show(self):
+#
+#         for i in self.grid_slaves():
+#             i.grid_forget()
+#
+#         self.grid_rowconfigure(0, minsize=40)
+#
+#         self.grid_columnconfigure(0, weight=1)
+#         self.grid_columnconfigure(1, weight=1)
+#         self.grid_columnconfigure(2, weight=1)
+#
+#         self.separator.grid(row=1, columnspan=3, sticky="ew")
+#
+#
+#         # Ein Label für die Spaltenüberschriften
+#         self.activity_label.grid(row=0, column=0, padx=5, pady=5)
+#         self.calories_label.grid(row=0, column=1, padx=5, pady=5)
+#         self.date_label.grid(row=0, column=2, padx=5, pady=5)
+#
+#         with self.controller.db.get_connection() as conn:
+#             cursor = conn.cursor()
+#             cursor.execute("SELECT activity, calories, date FROM workouts ORDER BY date DESC")
+#             workouts = cursor.fetchall()
+#             print('Workouts' + str(workouts))
+#
+#         for index, workout in enumerate(workouts, start=1):
+#             tk.Label(self, text=workout[0]).grid(row=index + 5, column=0, padx=5, pady=5)
+#             tk.Label(self, text=workout[1]).grid(row=index + 5, column=1, padx=5, pady=5)
+#             tk.Label(self, text=workout[2]).grid(row=index + 5, column=2, padx=5, pady=5)
+
 class Trainingview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -282,7 +329,6 @@ class Trainingview(tk.Frame):
 
         self.separator = ttk.Separator(self, orient='horizontal')
 
-
     def show(self):
 
         for i in self.grid_slaves():
@@ -296,7 +342,6 @@ class Trainingview(tk.Frame):
 
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
-
         # Ein Label für die Spaltenüberschriften
         self.activity_label.grid(row=0, column=0, padx=5, pady=5)
         self.calories_label.grid(row=0, column=1, padx=5, pady=5)
@@ -308,10 +353,14 @@ class Trainingview(tk.Frame):
             workouts = cursor.fetchall()
             print('Workouts' + str(workouts))
 
-        for index, workout in enumerate(workouts, start=1):
-            tk.Label(self, text=workout[0]).grid(row=index + 5, column=0, padx=5, pady=5)
-            tk.Label(self, text=workout[1]).grid(row=index + 5, column=1, padx=5, pady=5)
-            tk.Label(self, text=workout[2]).grid(row=index + 5, column=2, padx=5, pady=5)
+        # ScrolledText-Widget für Trainingsaktivitäten mit doppelter Höhe und Helvetica 14
+        text_widget = ScrolledText(self, wrap=tk.WORD, width=40, height=20, font=('Helvetica', 10))
+        text_widget.grid(row=3, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
+
+        # Trainingsaktivitäten im Text-Widget anzeigen
+        for workout in workouts:
+            text_widget.insert(tk.END, f" \t\t{workout[0]}\t\t\t\t\t\t\tKalorien: {workout[1]}\t\t\t\t\t\tDatum: {workout[2]}\n")
+
 
 
 
@@ -373,6 +422,53 @@ class Trainingrecordview(tk.Frame):
         self.workout_entry.set('')
 
 
+# class Mealview(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#         self.controller = controller
+#
+#         self.title = "Mahlzeiten"
+#         self.separator = ttk.Separator(self, orient='horizontal')
+#
+#         # Ein Label für die Spaltenüberschriften
+#         self.meal_label = tk.Label( self, text="Mahlzeit", font=('Helvetica', 14, 'bold'))
+#         self.calory_label = tk.Label(self,text="Kalorien", font=('Helvetica', 14, 'bold'))
+#         self.date_label = tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold'))
+#
+#     def show(self):
+#         for i in self.grid_slaves():
+#             i.grid_forget()
+#
+#         self.grid_rowconfigure(0, minsize=40)
+#
+#         self.grid_columnconfigure(0, weight=1)
+#         self.grid_columnconfigure(1, weight=1)
+#         self.grid_columnconfigure(2, weight=1)
+#
+#         self.separator.grid(row=1, columnspan=3, sticky="ew")
+#
+#         # Label für Mahlzeiten
+#
+#         self.meal_label.grid(row=0, column=0, padx=5, pady=5)
+#         self.calory_label.grid(row=0, column=1, padx=5, pady=5)
+#         self.date_label.grid(row=0, column=2, padx=5, pady=5)
+#
+#         with self.controller.db.get_connection() as conn:
+#             cursor = conn.cursor()
+#             cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
+#             meals = cursor.fetchall()
+#             print('Meals ' + str(meals))
+#
+#         # Mahlzeiten im Frame anzeigen
+#         for index, meal in enumerate(meals, start=1):
+#             tk.Label(self, text='').grid(row=index + 5, column=0, padx=5, pady=5)
+#             tk.Label(self, text='').grid(row=index + 5, column=1, padx=5, pady=5)
+#             tk.Label(self, text='').grid(row=index + 5, column=2, padx=5, pady=5)
+#
+#             tk.Label(self, text=meal[0]).grid(row=index+5, column=0, padx=5, pady=5)
+#             tk.Label(self, text=meal[1]).grid(row=index+5, column=1, padx=5, pady=5)
+#             tk.Label(self, text=meal[2]).grid(row=index+5, column=2, padx=5, pady=5)
+
 class Mealview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -382,8 +478,8 @@ class Mealview(tk.Frame):
         self.separator = ttk.Separator(self, orient='horizontal')
 
         # Ein Label für die Spaltenüberschriften
-        self.meal_label = tk.Label( self, text="Mahlzeit", font=('Helvetica', 14, 'bold'))
-        self.calory_label = tk.Label(self,text="Kalorien", font=('Helvetica', 14, 'bold'))
+        self.meal_label = tk.Label(self, text="Mahlzeit", font=('Helvetica', 14, 'bold'))
+        self.calory_label = tk.Label(self, text="Kalorien", font=('Helvetica', 14, 'bold'))
         self.date_label = tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold'))
 
     def show(self):
@@ -399,7 +495,6 @@ class Mealview(tk.Frame):
         self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         # Label für Mahlzeiten
-
         self.meal_label.grid(row=0, column=0, padx=5, pady=5)
         self.calory_label.grid(row=0, column=1, padx=5, pady=5)
         self.date_label.grid(row=0, column=2, padx=5, pady=5)
@@ -410,15 +505,14 @@ class Mealview(tk.Frame):
             meals = cursor.fetchall()
             print('Meals ' + str(meals))
 
-        # Mahlzeiten im Frame anzeigen
-        for index, meal in enumerate(meals, start=1):
-            tk.Label(self, text='').grid(row=index + 5, column=0, padx=5, pady=5)
-            tk.Label(self, text='').grid(row=index + 5, column=1, padx=5, pady=5)
-            tk.Label(self, text='').grid(row=index + 5, column=2, padx=5, pady=5)
+        # ScrolledText-Widget für Mahlzeiten mit doppelter Höhe
+        text_widget = ScrolledText(self, wrap=tk.WORD, width=40, height=20, font=('Helvetica', 10))
+        text_widget.grid(row=3, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
 
-            tk.Label(self, text=meal[0]).grid(row=index+5, column=0, padx=5, pady=5)
-            tk.Label(self, text=meal[1]).grid(row=index+5, column=1, padx=5, pady=5)
-            tk.Label(self, text=meal[2]).grid(row=index+5, column=2, padx=5, pady=5)
+        # Mahlzeiten im Text-Widget anzeigen
+        for meal in meals:
+            text_widget.insert(tk.END, f"\t\t {meal[0]} \t\t\t\t\t\t\t\t {meal[1]} \t\t\t\t\t {meal[2]}\n")
+
 
 class Mealrecordview(tk.Frame):
     def callback(self, P):
@@ -520,6 +614,84 @@ class Mealrecordview(tk.Frame):
 
 
 
+# class Weightview(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#         self.title = "Gewichtsverlauf"
+#         self.separator = ttk.Separator(self, orient='horizontal')
+#
+#         self.controller = controller
+#         self.zielgewicht = 70  # Hier das gewünschte Zielgewicht eintragen
+#
+#     def show(self):
+#
+#         for i in self.grid_slaves():
+#             i.grid_forget()
+#
+#         self.grid_rowconfigure(0, minsize=40)
+#
+#         self.grid_columnconfigure(0, weight=1)
+#         self.grid_columnconfigure(1, weight=1)
+#         self.grid_columnconfigure(2, weight=2)
+#
+#         self.separator.grid(row=1, column=0, columnspan=2, sticky="ew")
+#
+#         # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
+#         # neues_fenster = tk.Toplevel(self.controller.container)
+#         # weight_logs_frame = tk.Frame(neues_fenster)
+#         # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
+#
+#         # Ein Label für die Spaltenüberschriften
+#         tk.Label(self, text="Gewicht (kg)", font=('Helvetica', 14, 'bold')).grid(row=0, column=1, padx=5, pady=5)
+#         tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold')).grid(row=0, column=0, padx=5, pady=5)
+#
+#         # Gewichtsverlauf aus der Datenbank abrufen
+#         with self.controller.db.get_connection() as conn:
+#             cursor = conn.cursor()
+#             cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
+#             weight_logs = cursor.fetchall()
+#             print('Gewichtsverlauf' + str(weight_logs))
+#
+#         # Gewichtsverlauf im Frame anzeigen
+#         #for index, log in enumerate(weight_logs, start=1):
+#            # tk.Label(self, text=log[0]).grid(row=index+2, column=1, padx=10, pady=10)
+#             #tk.Label(self, text=log[1]).grid(row=index+2, column=0, padx=10, pady=10)
+#
+#         # Gewichtsverlauf im Frame anzeigen
+#         weights_label = tk.Label(self, text="\n".join(str(log[0]) for log in weight_logs))
+#         weights_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+#
+#         dates_label = tk.Label(self, text="\n".join(str(log[1]) for log in weight_logs))
+#         dates_label.grid(row=3, column=0, padx=5, pady=5, sticky="e")
+#
+#         # Zielgewichtslinie hinzufügen
+#         plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
+#
+#         # Gewichtsverlauf als roten Graphen anzeigen
+#         weights = [log[0] for log in weight_logs]
+#         dates = [log[1] for log in weight_logs]
+#
+#         fig, ax = plt.subplots()
+#         ax.plot(dates, weights, color='red', marker='o', label='Werte')
+#         ax.set_title('Gewichtsverlauf')
+#         ax.set_xlabel('Datum')
+#         ax.set_ylabel('Gewicht (kg)')
+#         ax.legend()
+#
+#         # Datumsansicht um 45 Grad drehen
+#         plt.xticks(rotation=45, ha='right')
+#         ax.xaxis.set_major_locator(mdates.MonthLocator())
+#
+#         ax.autoscale()
+#         ax.margins(x=0.1)  # Optional: Fügt etwas Platz links und rechts hinzu
+#
+#         canvas = FigureCanvasTkAgg(fig, master=self)
+#         canvas_widget = canvas.get_tk_widget()
+#         canvas_widget.grid(row=0, column=3, rowspan=10, padx=10, pady=10, sticky='n')
+#
+#         canvas.draw()
+
+
 class Weightview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -542,33 +714,22 @@ class Weightview(tk.Frame):
 
         self.separator.grid(row=1, column=0, columnspan=2, sticky="ew")
 
-        # Ein Frame erstellen, um den Gewichtsverlauf anzuzeigen
-        # neues_fenster = tk.Toplevel(self.controller.container)
-        # weight_logs_frame = tk.Frame(neues_fenster)
-        # weight_logs_frame.grid(row=16, column=0, columnspan=2, pady=10)
-
-        # Ein Label für die Spaltenüberschriften
         tk.Label(self, text="Gewicht (kg)", font=('Helvetica', 14, 'bold')).grid(row=0, column=1, padx=5, pady=5)
         tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold')).grid(row=0, column=0, padx=5, pady=5)
 
-        # Gewichtsverlauf aus der Datenbank abrufen
         with self.controller.db.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT weight, date FROM weight_logs ORDER BY date DESC")
             weight_logs = cursor.fetchall()
             print('Gewichtsverlauf' + str(weight_logs))
 
-        # Gewichtsverlauf im Frame anzeigen
-        #for index, log in enumerate(weight_logs, start=1):
-           # tk.Label(self, text=log[0]).grid(row=index+2, column=1, padx=10, pady=10)
-            #tk.Label(self, text=log[1]).grid(row=index+2, column=0, padx=10, pady=10)
+        # ScrolledText-Widget für den Gewichtsverlauf
+        text_widget = ScrolledText(self, wrap=tk.WORD, width=40, height=20, font=('Helvetica', 10))
+        text_widget.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
 
-        # Gewichtsverlauf im Frame anzeigen
-        weights_label = tk.Label(self, text="\n".join(str(log[0]) for log in weight_logs))
-        weights_label.grid(row=3, column=1, padx=5, pady=5, sticky="w")
-
-        dates_label = tk.Label(self, text="\n".join(str(log[1]) for log in weight_logs))
-        dates_label.grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        # Gewichtsverlauf im Text-Widget anzeigen
+        for log in weight_logs:
+            text_widget.insert(tk.END, f" {log[1]} \t\t\t\t {log[0]} \n")
 
         # Zielgewichtslinie hinzufügen
         plt.axhline(y=self.zielgewicht, color='green', linestyle='--', label='Zielgewicht')
@@ -584,18 +745,19 @@ class Weightview(tk.Frame):
         ax.set_ylabel('Gewicht (kg)')
         ax.legend()
 
-        # Datumsansicht um 45 Grad drehen
         plt.xticks(rotation=45, ha='right')
         ax.xaxis.set_major_locator(mdates.MonthLocator())
 
         ax.autoscale()
-        ax.margins(x=0.1)  # Optional: Fügt etwas Platz links und rechts hinzu
+        ax.margins(x=0.1)
 
         canvas = FigureCanvasTkAgg(fig, master=self)
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.grid(row=0, column=3, rowspan=10, padx=10, pady=10, sticky='n')
 
         canvas.draw()
+
+
 
 class Weightrecordview(tk.Frame):
 
