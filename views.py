@@ -12,6 +12,8 @@ from user_meal_activity_weight import *
 from PIL import Image, ImageTk
 from ttkthemes import ThemedStyle
 from tkinter.scrolledtext import ScrolledText
+import pywinstyles
+
 
 
 
@@ -95,8 +97,14 @@ class Startview(tk.Frame):
         for i in self.show_workout_date_label_1, self.show_workout_date_label_2, self.show_workout_date_label_3:
             self.show_workout_dates.append(i)
 
+        # Setze das Hintergrundbild
+        self.background_image = tk.PhotoImage(file="img/training_bg.png")  # Passe den Pfad an
+        self.background_canvas = tk.Canvas(self, width=800, height=600)  # Passe die Größe an
+        self.background_canvas.create_image(0, 0, anchor=tk.NW, image=self.background_image)
+
 
     def show(self):
+        # self.background_canvas.grid(row=0, column=0, columnspan=100, rowspan=100, sticky="nsew")
 
         # 2 columns, gleiche Breite
         self.grid_columnconfigure(0, weight=1)
@@ -207,6 +215,8 @@ class Startview(tk.Frame):
 
         self.separator_hor.grid(row=3, column=0, columnspan=5, sticky='ew')
         self.separator_ver.grid(row=3, column=2, rowspan=10, sticky='ns')
+
+
 
 
 class Userview(tk.Frame):
@@ -329,6 +339,9 @@ class Trainingview(tk.Frame):
 
         self.separator = ttk.Separator(self, orient='horizontal')
 
+
+
+
     def show(self):
 
         for i in self.grid_slaves():
@@ -355,7 +368,8 @@ class Trainingview(tk.Frame):
 
         # ScrolledText-Widget für Trainingsaktivitäten mit doppelter Höhe und Helvetica 14
         text_widget = ScrolledText(self, wrap=tk.WORD, width=40, height=20, font=('Helvetica', 10))
-        text_widget.grid(row=3, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
+        text_widget.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky="nsew")
+
 
         # Trainingsaktivitäten im Text-Widget anzeigen
         for workout in workouts:

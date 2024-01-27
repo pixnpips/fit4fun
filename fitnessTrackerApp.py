@@ -18,7 +18,7 @@ class FitnessTrackerApp(tk.Tk):
         self.geometry('1080x720')
         self.resizable(False, True)
 
-
+        self.wm_attributes('-transparentcolor', '#ab23ff')
 
         # Kopfleiste
         self.button = tk.Button(self, text="←", command=lambda: self.show_frame("sv"))
