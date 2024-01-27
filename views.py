@@ -476,6 +476,8 @@ class Mealrecordview(tk.Frame):
 
     def show(self):
 
+        self.reset()
+
         for i in self.grid_slaves():
             i.grid_forget()
 
@@ -501,6 +503,8 @@ class Mealrecordview(tk.Frame):
 
         self.record_meal_button.grid(row=8, column=0, columnspan=2, padx=10, pady=10)
         self.message_Label.grid(row=10, column=0, columnspan=2, pady=10)
+
+
 
     def reset(self):
 
