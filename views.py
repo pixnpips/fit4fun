@@ -385,6 +385,9 @@ class Mealview(tk.Frame):
         self.date_label = tk.Label(self, text="Datum", font=('Helvetica', 14, 'bold'))
 
     def show(self):
+        for i in self.grid_slaves():
+            i.grid_forget()
+
         self.grid_rowconfigure(0, minsize=40)
 
         self.grid_columnconfigure(0, weight=1)
@@ -477,10 +480,6 @@ class Mealrecordview(tk.Frame):
     def show(self):
 
         self.reset()
-
-        for i in self.grid_slaves():
-            i.grid_forget()
-
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
@@ -512,14 +511,14 @@ class Mealrecordview(tk.Frame):
         y.set('0')
 
         for x in self.drink_x_entry, self.first_x_entry, self.second_x_entry:
-            x.configure(textvariable=y)
+            x.delete(0, 'end')
+            x.insert(0, '0')
 
         for x in self.first_combo, self.second_combo, self.drink_combo:
             x.current(0)
 
         self.message_Label.configure(text='')
 
-        self.controller.show_frame("sv")
 
 
 class Weightview(tk.Frame):
