@@ -507,9 +507,6 @@ class Mealrecordview(tk.Frame):
 
     def reset(self):
 
-        y = tk.StringVar()
-        y.set('0')
-
         for x in self.drink_x_entry, self.first_x_entry, self.second_x_entry:
             x.delete(0, 'end')
             x.insert(0, '0')
