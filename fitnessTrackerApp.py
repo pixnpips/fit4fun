@@ -73,7 +73,7 @@ class FitnessTrackerApp(tk.Tk):
         #Styles werden gesetzt
         for x in self.frames:
             style = ThemedStyle(self.frames.get(x))
-            style.set_theme("arc")
+            style.set_theme("equilux")
 
         self.Startview.grid(row=3, column=0, sticky="nsew")
 
