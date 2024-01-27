@@ -114,15 +114,15 @@ class Startview(tk.Frame):
             self.name_label.configure(text=names[0] , font=('Helvetica', 18, 'bold'))
             self.name_label.grid(row=0, column=0, columnspan=5, padx=10, pady=10)
 
-        self.record_weight_button.grid(row=1, column=0, columnspan=2, padx=10, pady=20)
-        self.show_weight_button.grid(row=1, column=3, columnspan=2, padx=10, pady=20)
+        self.record_weight_button.grid(row=1, column=3, columnspan=2, padx=10, pady=20)
+        self.show_weight_button.grid(row=2, column=3, columnspan=2, padx=10, pady=20)
 
         # self.separator.grid(row=1, columnspan=3, sticky="ew")
 
 
         # Label für Gewichtsverlauf
-        self.weight_label.grid(row=2, column=0, padx=10, pady=10)
-        self.show_weight_label.grid(row=2, column=1, padx=10, pady=10)
+        self.weight_label.grid(row=1, column=0, columnspan = 2, padx=10, pady=10)
+        self.show_weight_label.grid(row=2, column=0, columnspan = 2, padx=10, pady=10)
 
         self.cursor.execute("SELECT weight FROM weight_logs ORDER BY date DESC ")
         weights = self.cursor.fetchall()
@@ -132,11 +132,11 @@ class Startview(tk.Frame):
 
         # self.target_weight_label.grid(row=2, column=2, padx=10, pady=10)
 
-        for i, m in enumerate(self.show_workouts, start=0):
-            m.grid(row=i + 6, column=1, padx=5, pady=5)
+        # for i, m in enumerate(self.show_workouts, start=0):
+        #    m.grid(row=i + 6, column=1, padx=5, pady=5)
 
-        for i, m in enumerate(self.show_workout_dates, start=0) :
-            m.grid(row=i + 6, column=0, padx=5, pady=5)
+        # for i, m in enumerate(self.show_workout_dates, start=0) :
+        #    m.grid(row=i + 6, column=0, padx=5, pady=5)
 
         # self.workouts_area.grid(row=4, column=0, columnspan=2, rowspan=4)
 
@@ -152,18 +152,18 @@ class Startview(tk.Frame):
             objects = workouts[:3]
             for index, object in enumerate(objects, start=0):
                 self.show_workout_dates[index].configure(text=object[0])
-                self.show_workout_dates[index].grid(row=index + 10, column=0, padx=5, pady=5)
+                self.show_workout_dates[index].grid(row=index + 7, column=0, padx=5, pady=5)
                 self.show_workouts[index].configure(text=object[1])
-                self.show_workouts[index].grid(row=index + 10, column=1, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
+                self.show_workouts[index].grid(row=index + 7, column=1, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
 
         else:
             for index, workout in enumerate(workouts, start=0):
                 self.show_workout_dates[index].configure(text=workout[0])
-                self.show_workout_dates[index].grid(row=index+10, column=0, padx=5, pady=5)
+                self.show_workout_dates[index].grid(row=index+7, column=0, padx=5, pady=5)
                 self.show_workouts[index].configure(text=workout[1])
-                self.show_workouts[index].grid(row=index+10, column=1, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
+                self.show_workouts[index].grid(row=index+7, column=1, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
 
         # Buttons zum Recorden platzieren
         #self.meals_area.grid(row=4, column=2, columnspan=2, rowspan=4)
@@ -172,11 +172,11 @@ class Startview(tk.Frame):
         self.show_meal_button.grid(row=5, column=3, columnspan=2, padx=10, pady=20)
         self.meals_label.grid(row=6, column=3, columnspan=2, padx=10, pady=20)
 
-        for i, m in enumerate(self.show_meals, start=0):
-            m.grid(row=i + 12, column=1, padx=5, pady=5)
+        # for i, m in enumerate(self.show_meals, start=0):
+        #    m.grid(row=i + 12, column=1, padx=5, pady=5)
 
-        for i, m in enumerate(self.show_meal_dates, start=0) :
-            m.grid(row=i + 12, column=0, padx=5, pady=5)
+        # for i, m in enumerate(self.show_meal_dates, start=0) :
+        #    m.grid(row=i + 12, column=0, padx=5, pady=5)
 
         self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
         meals = self.cursor.fetchall()
@@ -186,24 +186,24 @@ class Startview(tk.Frame):
             objects = meals[:3]
             for index, object in enumerate(objects, start=0):
                 self.show_meals[index].configure(text=object[1])
-                self.show_meals[index].grid(row=index + 12, column=3, padx=5, pady=5)
+                self.show_meals[index].grid(row=index + 7, column=3, padx=5, pady=5)
                 self.show_meal_dates[index].configure(text=object[0])
-                self.show_meal_dates[index].grid(row=index + 12, column=4, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
+                self.show_meal_dates[index].grid(row=index + 7, column=4, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
         else:
             for index, meal in enumerate(meals, start=0):
                 self.show_meals[index].configure(text = meal[1])
-                self.show_meals[index].grid(row=index + 12, column=3, padx=5, pady=5)
+                self.show_meals[index].grid(row=index + 7, column=3, padx=5, pady=5)
                 self.show_meal_dates[index].configure(text=meal[0])
-                self.show_meal_dates[index].grid(row=index + 12, column=4, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 12, column=2, rowspan=2, sticky='ns')
+                self.show_meal_dates[index].grid(row=index + 7, column=4, padx=5, pady=5)
+                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
 
         # Buttons zum Anzeigen von Daten platzieren
 
         self.message_Label.grid(row=21, column=0, columnspan=5, pady=20)
 
-        self.separator_hor.grid(row=2, column=0, columnspan=5, sticky='ew')
-        self.separator_ver.grid(row=2, column=2, rowspan=10, sticky='ns')
+        self.separator_hor.grid(row=3, column=0, columnspan=5, sticky='ew')
+        self.separator_ver.grid(row=3, column=2, rowspan=10, sticky='ns')
 
 
 class Userview(tk.Frame):
