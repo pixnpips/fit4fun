@@ -10,6 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk
 from user_meal_activity_weight import *
 from PIL import Image, ImageTk
+from ttkthemes import ThemedStyle
 
 
 
@@ -18,6 +19,7 @@ class Startview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
 
         self.db = Database()
         self.connection = self.db.get_connection()

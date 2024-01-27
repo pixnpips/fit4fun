@@ -6,17 +6,19 @@ from datetime import datetime
 from database import Database
 from user_meal_activity_weight import *
 from tkinter import ttk
+from ttkthemes import ThemedStyle
 
 
 class FitnessTrackerApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
         # Titel und Schriftart
         self.title("Fit4Fun")
         # self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
         self.geometry('1080x720')
         self.resizable(False, True)
+
+
 
         # Kopfleiste
         self.button = tk.Button(self, text="←", command=lambda: self.show_frame("sv"))
@@ -49,6 +51,8 @@ class FitnessTrackerApp(tk.Tk):
         # View Objekte erzeugen und in den Frame packen
 
         self.Startview = Startview(parent=self.container, controller=self)
+
+
         self.Userview = Userview(parent=self.container, controller=self)
         self.Trainingview = Trainingview(parent=self.container, controller=self)
         self.Trainingrecordview = Trainingrecordview(parent=self.container, controller=self)
@@ -66,7 +70,13 @@ class FitnessTrackerApp(tk.Tk):
         self.frames['wv'] = self.Weightview
         self.frames['wrv'] = self.Weightrecordview
 
+        #Styles werden gesetzt
+        for x in self.frames:
+            style = ThemedStyle(self.frames.get(x))
+            style.set_theme("arc")
+
         self.Startview.grid(row=3, column=0, sticky="nsew")
+
         self.Userview.grid(row=3, column=0, sticky="nsew")
         self.Trainingview.grid(row=3, column=0, sticky="nsew")
         self.Trainingrecordview.grid(row=3, column=0, sticky="nsew")
