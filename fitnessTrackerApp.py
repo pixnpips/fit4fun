@@ -135,8 +135,11 @@ class FitnessTrackerApp(tk.Tk):
         self.Userview.message_Label.configure(text=f"Hallo {name}, es kann losgehen",
                                               foreground="green")
 
-        # Eingabefelder leeren
-        # self.Startview.weight_entry.delete(0, tki.END)
+        # Aktuelles Datum und Uhrzeit abrufen
+        current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Gewichtsverlauf in die Datenbank einfügen
+        cursor.execute("INSERT INTO weight_logs (weight, date) VALUES (?, ?)", (weight, current_date))
 
         cursor.execute("SELECT * FROM user")
         users = cursor.fetchall()

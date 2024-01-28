@@ -12,7 +12,6 @@ from user_meal_activity_weight import *
 from PIL import Image, ImageTk
 from ttkthemes import ThemedStyle
 from tkinter.scrolledtext import ScrolledText
-import pywinstyles
 import os.path
 
 
