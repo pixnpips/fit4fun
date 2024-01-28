@@ -1,20 +1,16 @@
 import tkinter as tk
-
 from views import Startview, Userview, Trainingview, Trainingrecordview, Mealview, Mealrecordview, Weightview, Weightrecordview
-from tkinter import font as tkfont
 from datetime import datetime
 from database import Database
 from user_meal_activity_weight import *
 from tkinter import ttk
 from ttkthemes import ThemedStyle
 
-
 class FitnessTrackerApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        # Titel und Schriftart
+        # Titel
         self.title("Fit4Fun")
-        # self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
         self.geometry('1080x720')
         self.resizable(False, True)
 
@@ -24,7 +20,6 @@ class FitnessTrackerApp(tk.Tk):
 
         # Kopfleiste
         self.button = tk.Button(self, text="←", command=lambda: self.show_frame("sv"))
-        # self.button.grid(row=0, column=0)
         self.title_label = tk.Label(self, text="", font=('Helvetica', 18, 'bold'))
         self.placeholder = tk.Label(self, text="")
 
@@ -42,7 +37,6 @@ class FitnessTrackerApp(tk.Tk):
 
         # self.container wird erstellt, der alle Frames beinhaltet
         self.container = tk.Frame(self)
-        # self.container.pack(side="top", anchor='center', fill="both", expand=True)
         self.container.grid(row=3, column=0, columnspan=3, sticky="nsew")
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1, minsize=1080)
@@ -53,8 +47,6 @@ class FitnessTrackerApp(tk.Tk):
         # View Objekte erzeugen und in den Frame packen
 
         self.Startview = Startview(parent=self.container, controller=self)
-
-
         self.Userview = Userview(parent=self.container, controller=self)
         self.Trainingview = Trainingview(parent=self.container, controller=self)
         self.Trainingrecordview = Trainingrecordview(parent=self.container, controller=self)
@@ -78,7 +70,6 @@ class FitnessTrackerApp(tk.Tk):
             style.set_theme("equilux")
 
         self.Startview.grid(row=3, column=0, sticky="nsew")
-
         self.Userview.grid(row=3, column=0, sticky="nsew")
         self.Trainingview.grid(row=3, column=0, sticky="nsew")
         self.Trainingrecordview.grid(row=3, column=0, sticky="nsew")
@@ -87,14 +78,15 @@ class FitnessTrackerApp(tk.Tk):
         self.Weightview.grid(row=3, column=0, sticky="nsew")
         self.Weightrecordview.grid(row=3, column=0, sticky="nsew")
 
+        # Zuerst Startview anzeigen
         self.show_frame("sv")
 
         print(vars(self.frames.get('sv')))
 
-        # funktionen mappen
+        # Button funktionen mappen
         self.map_button_functions()
 
-    # Funktion, die eine View in einem Frame im Cointainer an die Topo Positioon bringt
+    # Funktion, die eine View in einem Frame im Cointainer an die Top Positioon bringt
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
@@ -199,6 +191,7 @@ class FitnessTrackerApp(tk.Tk):
             self.Trainingrecordview.message_Label.configure(text='Bitte Länge Trainings eingeben', foreground='red')
             return
 
+        # Kalorien berechnen
         calories = int(cal_per_min) * int(duration)
 
         print(calories)
@@ -206,18 +199,13 @@ class FitnessTrackerApp(tk.Tk):
         # Aktuelles Datum und Uhrzeit abrufen
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Trainingsaktivität in die Datenbank einfügen
-
-        # cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (activity, current_date))
+        # Trainingsaktivität in die Datenbank schreiben
         cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (activity, int(duration), int(calories), current_date))
 
         # Meldung anzeigen, dass die Trainingsaktivität erfolgreich aufgezeichnet wurde
         self.Trainingrecordview.message_Label.configure(
             text=f"Trainingsaktivität '{activity}' erfolgreich aufgezeichnet.",
             foreground="green")
-
-        # Eingabefelder leeren
-        self.Trainingrecordview.workout_entry.delete(0, tk.END)
 
         cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
         workouts = cursor.fetchall()
@@ -232,6 +220,7 @@ class FitnessTrackerApp(tk.Tk):
         second = self.Mealrecordview.second_combo.get()
         drink = self.Mealrecordview.drink_combo.get()
 
+        # Meal aus Klasse erstellen
         meal = Meal()
         meal.first = Meal.first[self.Mealrecordview.first_combo.current()]
         meal.second = Meal.second[self.Mealrecordview.second_combo.current()]
@@ -277,7 +266,6 @@ class FitnessTrackerApp(tk.Tk):
         if drink == 'Bitte wählen':
             drink = ''
         # Eingabewerte vom Benutzer abrufen
-        # calories = self.calories_entry.get()
         calories = meal.count_cals()
 
         # Aktuelles Datum und Uhrzeit abrufen
@@ -293,11 +281,6 @@ class FitnessTrackerApp(tk.Tk):
             foreground="green")
 
         connection.commit()
-        # self.calories_entry.delete(0, tki.END)
-
-        # cursor.execute("SELECT meal_name, calories, date FROM meals ORDER BY date DESC")
-        # meals = cursor.fetchall()
-        # print(meals)
 
 
     def record_weight(self):
@@ -342,30 +325,18 @@ class FitnessTrackerApp(tk.Tk):
     def map_button_functions(self):
 
         # Mapping der Funktionen in der Startview
-
-        # self.Startview.show_workout_button.configure(command=self.show_workouts)
         self.Startview.show_workout_button.configure(command=lambda: self.show_frame("tv"))
-        # self.Startview.record_workout_button.configure(command=self.record_workout)
         self.Startview.record_workout_button.configure(command=lambda: self.show_frame("trv"))
-
-        # self.Startview.show_meal_button.configure(command=self.show_meals)
-        # self.Startview.record_meal_button.configure(command=self.record_meal)
-
         self.Startview.show_meal_button.configure(command=lambda: self.show_frame('mv'))
         self.Startview.record_meal_button.configure(command=lambda: self.show_frame('mrv'))
-
-        # self.Startview.show_weight_button.configure(command=self.show_weight_logs)
         self.Startview.show_weight_button.configure(command=lambda: self.show_frame('wv'))
         self.Startview.record_weight_button.configure(command=lambda: self.show_frame('wrv'))
 
         # Mapping der Funktionen in allen anderen Views
-
         self.Userview.create_user_button.configure(command=self.record_user)
         self.Trainingrecordview.safe_workout_button.configure(command=self.record_workout)
         self.Mealrecordview.record_meal_button.configure(command=self.record_meal)
-
         self.Weightrecordview.safe_weight_button.configure(command=self.record_weight)
-
 
 
 if __name__ == "__main__":

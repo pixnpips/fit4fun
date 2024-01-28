@@ -500,7 +500,6 @@ class Mealrecordview(tk.Frame):
 
         self.message_Label.configure(text='')
 
-
 class Weightview(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
