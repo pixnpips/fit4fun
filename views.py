@@ -105,10 +105,10 @@ class Startview(tk.Frame):
             print('Alle User: ' + str(names))
 
             if len(names) == 0:
-                self.create_user_button.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+                self.create_user_button.grid(row=0, column=0, columnspan=5, padx=10, pady=10)
             else:
                 self.create_user_button.grid_forget()
-                self.name_label.configure(text=names[0] , font=('Helvetica', 18, 'bold'))
+                self.name_label.configure(text=names[0], font=('Helvetica', 18, 'bold'))
                 self.name_label.grid(row=0, column=0, columnspan=5, padx=10, pady=10)
 
             # Label für Gewichtsverlauf
