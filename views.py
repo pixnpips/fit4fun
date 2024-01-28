@@ -806,16 +806,14 @@ class Weightrecordview(tk.Frame):
         # 3 columns, gleiche Breite
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
 
-        self.separator.grid(row=1, columnspan=3, sticky="ew")
 
         # Aktuelles Gewicht aktualisieren
         #current_weight = get_current_weight()  # Funktion zum Abrufen des aktuellen Gewichts
         #self.controller.frames["Weightview"].weight_label.config(text=f"Aktuelles Gewicht: {current_weight}")
 
-        self.weight_label.grid(row=2, column=1, padx=10, pady=10)
-        self.weight_entry.grid(row=2, column=2, padx=10, pady=10)
-        self.safe_weight_button.grid(row=3, column=1, columnspan=2, padx=10, pady=10)
-        self.message_Label.grid(row=4, column=0, columnspan=3, pady=10)
+        self.weight_label.grid(row=2, column=0, padx=10, pady=10)
+        self.weight_entry.grid(row=2, column=1, padx=10, pady=10)
+        self.safe_weight_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+        self.message_Label.grid(row=4, column=0, columnspan=2, pady=10)
         self.message_Label.configure(text="")
