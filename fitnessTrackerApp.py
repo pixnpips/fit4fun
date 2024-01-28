@@ -18,6 +18,10 @@ class FitnessTrackerApp(tk.Tk):
         self.geometry('1080x720')
         self.resizable(False, True)
 
+        # SQLite-Datenbankverbindung herstellen
+        self.db = Database()
+        self.db.create_tables()
+
         # Kopfleiste
         self.button = tk.Button(self, text="←", command=lambda: self.show_frame("sv"))
         # self.button.grid(row=0, column=0)
@@ -84,9 +88,7 @@ class FitnessTrackerApp(tk.Tk):
         self.Weightrecordview.grid(row=3, column=0, sticky="nsew")
 
         self.show_frame("sv")
-        # SQLite-Datenbankverbindung herstellen
-        self.db = Database()
-        self.db.create_tables()
+
         print(vars(self.frames.get('sv')))
 
         # funktionen mappen

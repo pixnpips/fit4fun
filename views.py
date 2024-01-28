@@ -13,6 +13,7 @@ from PIL import Image, ImageTk
 from ttkthemes import ThemedStyle
 from tkinter.scrolledtext import ScrolledText
 import pywinstyles
+import os.path
 
 
 
@@ -23,6 +24,8 @@ class Startview(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.db_path = os.path.join(BASE_DIR, 'fitness_tracker.db')
 
         self.db = Database()
         self.connection = self.db.get_connection()
@@ -113,108 +116,111 @@ class Startview(tk.Frame):
         self.grid_columnconfigure(3, weight=1)
         self.grid_columnconfigure(4, weight=1)
 
-        # self.cursor.execute("SELECT name FROM user WHERE ID = 0 ")
-        self.cursor.execute("SELECT name FROM user")
-        names = self.cursor.fetchall()
-        print('Alle User: ' + str(names))
+        with sqlite3.connect(self.db_path) as db:
+            # self.cursor.execute("SELECT name FROM user WHERE ID = 0 ")
+            self.cursor.execute("SELECT name FROM user")
+            names = self.cursor.fetchall()
+            print('Alle User: ' + str(names))
 
-        if len(names) == 0:
-            self.create_user_button.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-        else:
-            self.create_user_button.grid_forget()
-            self.name_label.configure(text=names[0] , font=('Helvetica', 18, 'bold'))
-            self.name_label.grid(row=0, column=0, columnspan=5, padx=10, pady=10)
+            if len(names) == 0:
+                self.create_user_button.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
+            else:
+                self.create_user_button.grid_forget()
+                self.name_label.configure(text=names[0] , font=('Helvetica', 18, 'bold'))
+                self.name_label.grid(row=0, column=0, columnspan=5, padx=10, pady=10)
 
-        self.record_weight_button.grid(row=1, column=3, columnspan=2, padx=10, pady=20)
-        self.show_weight_button.grid(row=2, column=3, columnspan=2, padx=10, pady=20)
+            self.record_weight_button.grid(row=1, column=3, columnspan=2, padx=10, pady=20)
+            self.show_weight_button.grid(row=2, column=3, columnspan=2, padx=10, pady=20)
 
-        # self.separator.grid(row=1, columnspan=3, sticky="ew")
-
-
-        # Label für Gewichtsverlauf
-        self.weight_label.grid(row=1, column=0, columnspan = 2, padx=10, pady=10)
-        self.show_weight_label.grid(row=2, column=0, columnspan = 2, padx=10, pady=10)
-
-        self.cursor.execute("SELECT weight FROM weight_logs ORDER BY date DESC ")
-        weights = self.cursor.fetchall()
-        print('Alle Weights' + str(weights))
-        self.show_weight_label.configure(text=weights[0])
+            # self.separator.grid(row=1, columnspan=3, sticky="ew")
 
 
-        # self.target_weight_label.grid(row=2, column=2, padx=10, pady=10)
+            # Label für Gewichtsverlauf
+            self.weight_label.grid(row=1, column=0, columnspan = 2, padx=10, pady=10)
+            self.show_weight_label.grid(row=2, column=0, columnspan = 2, padx=10, pady=10)
 
-        # for i, m in enumerate(self.show_workouts, start=0):
-        #    m.grid(row=i + 6, column=1, padx=5, pady=5)
+            self.cursor.execute("SELECT weight FROM weight_logs ORDER BY date DESC ")
+            weights = self.cursor.fetchall()
+            print('Alle Weights' + str(weights))
 
-        # for i, m in enumerate(self.show_workout_dates, start=0) :
-        #    m.grid(row=i + 6, column=0, padx=5, pady=5)
+            if len(weights)!=0:
+                self.show_weight_label.configure(text=weights[0])
 
-        # self.workouts_area.grid(row=4, column=0, columnspan=2, rowspan=4)
 
-        self.record_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=20)
-        self.show_workout_button.grid(row=5, column=0, columnspan=2, padx=10, pady=20)
-        self.workout_label.grid(row=6, column=0, columnspan=2, padx=10, pady=20)
+            # self.target_weight_label.grid(row=2, column=2, padx=10, pady=10)
 
-        self.cursor.execute("SELECT date, activity FROM workouts ORDER BY date DESC")
-        workouts = self.cursor.fetchall()
-        print('Alle Workouts' + str(workouts))
+            # for i, m in enumerate(self.show_workouts, start=0):
+            #    m.grid(row=i + 6, column=1, padx=5, pady=5)
 
-        if len(workouts) > 3:
-            objects = workouts[:3]
-            for index, object in enumerate(objects, start=0):
-                self.show_workout_dates[index].configure(text=object[0])
-                self.show_workout_dates[index].grid(row=index + 7, column=0, padx=5, pady=5)
-                self.show_workouts[index].configure(text=object[1])
-                self.show_workouts[index].grid(row=index + 7, column=1, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
+            # for i, m in enumerate(self.show_workout_dates, start=0) :
+            #    m.grid(row=i + 6, column=0, padx=5, pady=5)
 
-        else:
-            for index, workout in enumerate(workouts, start=0):
-                self.show_workout_dates[index].configure(text=workout[0])
-                self.show_workout_dates[index].grid(row=index+7, column=0, padx=5, pady=5)
-                self.show_workouts[index].configure(text=workout[1])
-                self.show_workouts[index].grid(row=index+7, column=1, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
+            # self.workouts_area.grid(row=4, column=0, columnspan=2, rowspan=4)
 
-        # Buttons zum Recorden platzieren
-        #self.meals_area.grid(row=4, column=2, columnspan=2, rowspan=4)
+            self.record_workout_button.grid(row=4, column=0, columnspan=2, padx=10, pady=20)
+            self.show_workout_button.grid(row=5, column=0, columnspan=2, padx=10, pady=20)
+            self.workout_label.grid(row=6, column=0, columnspan=2, padx=10, pady=20)
 
-        self.record_meal_button.grid(row=4, column=3, columnspan=2, padx=10, pady=20)
-        self.show_meal_button.grid(row=5, column=3, columnspan=2, padx=10, pady=20)
-        self.meals_label.grid(row=6, column=3, columnspan=2, padx=10, pady=20)
+            self.cursor.execute("SELECT date, activity FROM workouts ORDER BY date DESC")
+            workouts = self.cursor.fetchall()
+            print('Alle Workouts' + str(workouts))
 
-        # for i, m in enumerate(self.show_meals, start=0):
-        #    m.grid(row=i + 12, column=1, padx=5, pady=5)
+            if len(workouts) > 3:
+                objects = workouts[:3]
+                for index, object in enumerate(objects, start=0):
+                    self.show_workout_dates[index].configure(text=object[0])
+                    self.show_workout_dates[index].grid(row=index + 7, column=0, padx=5, pady=5)
+                    self.show_workouts[index].configure(text=object[1])
+                    self.show_workouts[index].grid(row=index + 7, column=1, padx=5, pady=5)
+                    ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
 
-        # for i, m in enumerate(self.show_meal_dates, start=0) :
-        #    m.grid(row=i + 12, column=0, padx=5, pady=5)
+            else:
+                for index, workout in enumerate(workouts, start=0):
+                    self.show_workout_dates[index].configure(text=workout[0])
+                    self.show_workout_dates[index].grid(row=index+7, column=0, padx=5, pady=5)
+                    self.show_workouts[index].configure(text=workout[1])
+                    self.show_workouts[index].grid(row=index+7, column=1, padx=5, pady=5)
+                    ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
 
-        self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
-        meals = self.cursor.fetchall()
-        print('Alle Meals' + str(meals))
+            # Buttons zum Recorden platzieren
+            #self.meals_area.grid(row=4, column=2, columnspan=2, rowspan=4)
 
-        if len(meals)>3:
-            objects = meals[:3]
-            for index, object in enumerate(objects, start=0):
-                self.show_meals[index].configure(text=object[1])
-                self.show_meals[index].grid(row=index + 7, column=3, padx=5, pady=5)
-                self.show_meal_dates[index].configure(text=object[0])
-                self.show_meal_dates[index].grid(row=index + 7, column=4, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
-        else:
-            for index, meal in enumerate(meals, start=0):
-                self.show_meals[index].configure(text = meal[1])
-                self.show_meals[index].grid(row=index + 7, column=3, padx=5, pady=5)
-                self.show_meal_dates[index].configure(text=meal[0])
-                self.show_meal_dates[index].grid(row=index + 7, column=4, padx=5, pady=5)
-                ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
+            self.record_meal_button.grid(row=4, column=3, columnspan=2, padx=10, pady=20)
+            self.show_meal_button.grid(row=5, column=3, columnspan=2, padx=10, pady=20)
+            self.meals_label.grid(row=6, column=3, columnspan=2, padx=10, pady=20)
 
-        # Buttons zum Anzeigen von Daten platzieren
+            # for i, m in enumerate(self.show_meals, start=0):
+            #    m.grid(row=i + 12, column=1, padx=5, pady=5)
 
-        self.message_Label.grid(row=21, column=0, columnspan=5, pady=20)
+            # for i, m in enumerate(self.show_meal_dates, start=0) :
+            #    m.grid(row=i + 12, column=0, padx=5, pady=5)
 
-        self.separator_hor.grid(row=3, column=0, columnspan=5, sticky='ew')
-        self.separator_ver.grid(row=3, column=2, rowspan=10, sticky='ns')
+            self.cursor.execute("SELECT date, meal_name FROM meals ORDER BY date DESC")
+            meals = self.cursor.fetchall()
+            print('Alle Meals' + str(meals))
+
+            if len(meals)>3:
+                objects = meals[:3]
+                for index, object in enumerate(objects, start=0):
+                    self.show_meals[index].configure(text=object[1])
+                    self.show_meals[index].grid(row=index + 7, column=3, padx=5, pady=5)
+                    self.show_meal_dates[index].configure(text=object[0])
+                    self.show_meal_dates[index].grid(row=index + 7, column=4, padx=5, pady=5)
+                    ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
+            else:
+                for index, meal in enumerate(meals, start=0):
+                    self.show_meals[index].configure(text = meal[1])
+                    self.show_meals[index].grid(row=index + 7, column=3, padx=5, pady=5)
+                    self.show_meal_dates[index].configure(text=meal[0])
+                    self.show_meal_dates[index].grid(row=index + 7, column=4, padx=5, pady=5)
+                    ttk.Separator(self, orient='vertical').grid(row=index + 7, column=2, rowspan=2, sticky='ns')
+
+            # Buttons zum Anzeigen von Daten platzieren
+
+            self.message_Label.grid(row=21, column=0, columnspan=5, pady=20)
+
+            self.separator_hor.grid(row=3, column=0, columnspan=5, sticky='ew')
+            self.separator_ver.grid(row=3, column=2, rowspan=10, sticky='ns')
 
 
 
