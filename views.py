@@ -289,7 +289,7 @@ class Trainingview(tk.Frame):
 
         # Trainingsaktivitäten im Text-Widget anzeigen
         for workout in workouts:
-            text_widget.insert(tk.END, f" \t\t\t{workout[0]}\t\t\t\t\t\t\t\t{workout[1]}\t\t\t\t\t\t\t{workout[2]}\n")
+            text_widget.insert(tk.END, f" \t\t{workout[0]}\t\t\t\t\t\t\tKalorien: {workout[1]}\t\t\t\t\t\tDatum: {workout[2]}\n")
 
 class Trainingrecordview(tk.Frame):
 
@@ -409,7 +409,7 @@ class Mealview(tk.Frame):
 
         # Mahlzeiten im Text-Widget anzeigen
         for meal in meals:
-            text_widget.insert(tk.END, f"\t\t {meal[0]} \t\t\t\t\t\t\t\t\t {meal[1]} \t\t\t\t\t\t\t {meal[2]}\n")
+            text_widget.insert(tk.END, f"\t\t {meal[0]} \t\t\t\t\t\t\t\t {meal[1]} \t\t\t\t\t {meal[2]}\n")
 
 class Mealrecordview(tk.Frame):
 
