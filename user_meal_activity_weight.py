@@ -12,13 +12,47 @@ user = User("Mareenika", 28, 60, "Intermediate")
 print(f"User: {user.name}, Age: {user.age}, Weight: {user.weight}, Fitness Level: {user.fl}")
 
 class Activity:
-    def __init__(self, name, duration, calories):
+    def __init__(self, name, duration):
         self.name = name
         self.duration = duration
-        self.calories = calories
+        self.calories = 0
+        self.count_calories(name, duration)
+
+    def count_calories(self, activity, duration):
+        cal_per_min = 0
+        if activity == "Running":
+            cal_per_min = 17
+        elif activity == "Jogging":
+            cal_per_min = 15
+        elif activity == "Walking":
+            cal_per_min = 8
+        elif activity == "Swimming":
+            cal_per_min = 8
+        elif activity == "Cycling":
+            cal_per_min = 7
+        elif activity == "Basketball":
+            cal_per_min = 10
+        elif activity == "Soccer":
+            cal_per_min = 10
+        elif activity == "Tennis":
+            cal_per_min = 10
+        elif activity == "Boxing":
+            cal_per_min = 8
+        elif activity == "Yoga":
+            cal_per_min = 4
+        elif activity == "Pilates":
+            cal_per_min = 6
+        elif activity == "Weightlifting":
+            cal_per_min = 5
+        else:
+            cal_per_min = 0
+
+        self.calories = int(cal_per_min) * int(duration)
+        return self.calories
+
         
         # Beispiel für die Verwendung der Klasse Activity
-activity = Activity("Running", 30, 300)
+activity = Activity("Running", 30)
 
         # Ausgabe von Informationen
 print(f"Activity: Name: {activity.name}, Duration: {activity.duration}, Calories: {activity.calories}")

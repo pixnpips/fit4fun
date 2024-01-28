@@ -146,42 +146,11 @@ class FitnessTrackerApp(tk.Tk):
         cursor = connection.cursor()
 
         # Eingabewerte vom Benutzer abrufen
-        activity = self.Trainingrecordview.workout_entry.get()
-        cal_per_min = 0
-        if activity == "Running":
-            cal_per_min = 17
-        elif activity == "Jogging":
-            cal_per_min = 15
-        elif activity == "Walking":
-            cal_per_min = 8
-        elif activity == "Swimming":
-            cal_per_min = 8
-        elif activity == "Cycling":
-            cal_per_min = 7
-        elif activity == "Basketball":
-            cal_per_min = 10
-        elif activity == "Soccer":
-            cal_per_min = 10
-        elif activity == "Tennis":
-            cal_per_min = 10
-        elif activity == "Boxing":
-            cal_per_min = 8
-        elif activity == "Yoga":
-            cal_per_min = 4
-        elif activity == "Pilates":
-            cal_per_min = 6
-        elif activity == "Weightlifting":
-            cal_per_min = 5
-        else:
-            cal_per_min = 0
-
-        print(activity)
-        print(cal_per_min)
-
+        name = self.Trainingrecordview.workout_entry.get()
         duration = self.Trainingrecordview.duration_entry.get()
 
-        # Überprüfen, ob die Eingabe nicht leer ist
-        if activity == "":
+        # Überprüfen, ob die Eingaben nicht leer sind
+        if name == "":
             # Zeige eine Meldung an, dass das Feld nicht leer sein darf
             self.Trainingrecordview.message_Label.configure(text='Bitte Training eingeben', foreground='red')
             return
@@ -191,8 +160,10 @@ class FitnessTrackerApp(tk.Tk):
             self.Trainingrecordview.message_Label.configure(text='Bitte Länge Trainings eingeben', foreground='red')
             return
 
+        activity = Activity(name, duration)
+
         # Kalorien berechnen
-        calories = int(cal_per_min) * int(duration)
+        calories = activity.calories
 
         print(calories)
 
@@ -200,11 +171,11 @@ class FitnessTrackerApp(tk.Tk):
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Trainingsaktivität in die Datenbank schreiben
-        cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (activity, int(duration), int(calories), current_date))
+        cursor.execute("INSERT INTO workouts (activity, duration, calories, date) VALUES (?, ?, ?, ?)", (name, int(duration), int(calories), current_date))
 
         # Meldung anzeigen, dass die Trainingsaktivität erfolgreich aufgezeichnet wurde
         self.Trainingrecordview.message_Label.configure(
-            text=f"Trainingsaktivität '{activity}' erfolgreich aufgezeichnet.",
+            text=f"Trainingsaktivität '{name}' erfolgreich aufgezeichnet.",
             foreground="green")
 
         cursor.execute("SELECT activity, date FROM workouts ORDER BY date DESC")
